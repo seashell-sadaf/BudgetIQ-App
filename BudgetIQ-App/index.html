@@ -1,0 +1,3852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BudgetIQ — Warm Japandi Financial Ledger & Bill Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ==========================================================================
+       CSS VARIABLES & ROOT DESIGN SYSTEM (Warm Japandi & Porcelain Doll Aesthetic)
+       ========================================================================== */
+    :root {
+      /* Warm Japandi & Porcelain Color Palette */
+      --bg-primary: #F7F3ED;          /* Warm beige ceramic / washi canvas */
+      --bg-secondary: #EFE9DE;        /* Warm sand ceramic accent */
+      --bg-tertiary: #E8E1D3;         /* Earthen neutral */
+
+      --card-lavender: #F2EEFC;       /* Soft light lavender container */
+      --card-sky: #EBF3FA;            /* Pastel sky blue container */
+      --card-rose-alert: #FCE4EC;     /* Soft pastel rose / pink tint */
+      --card-rose-alert-alt: #FDE8E8;
+      --border-rose-alert: #F4A6B6;   /* Deeper rose border */
+
+      --surface-porcelain: #FFFFFF;   /* Pure glazed porcelain surface */
+      --surface-glass: rgba(255, 255, 255, 0.78);
+      --surface-glass-hover: rgba(255, 255, 255, 0.95);
+
+      /* Delicate Lavender Accents */
+      --accent-lavender: #8E7CC3;     /* Core delicate lavender */
+      --accent-lavender-light: #9D8CD7;
+      --accent-lavender-dark: #6C59A4;
+      --accent-lavender-soft: #D4C7F5;
+      --accent-lavender-mist: rgba(142, 124, 195, 0.14);
+      --accent-gradient: linear-gradient(135deg, #9D8CD7 0%, #8E7CC3 50%, #B8A9E8 100%);
+      --accent-gradient-soft: linear-gradient(135deg, #F2EEFC 0%, #EBF3FA 100%);
+      --accent-glow: 0 4px 20px rgba(142, 124, 195, 0.28);
+
+      /* Pastel Sky Accents */
+      --accent-sky: #8CB9DE;
+      --accent-sky-soft: #C5DCF0;
+      --accent-sky-dark: #3A6F9B;
+
+      /* Japandi Organic Semantic Colors */
+      --color-success: #3B7A57;       /* Delicate sage leaf */
+      --color-success-bg: #EAF5EE;
+      --color-success-border: #BCDDC6;
+
+      --color-danger: #C04A58;        /* Soft terracotta rose */
+      --color-danger-bg: #FDF0F2;
+      --color-danger-border: #F3C7CE;
+
+      --color-warning: #C67A26;       /* Honey ceramic amber */
+      --color-warning-bg: #FDF4E7;
+      --color-warning-border: #F7D7B0;
+
+      --color-info: #356D9B;
+
+      /* Porcelain Borders */
+      --surface-border: rgba(142, 124, 195, 0.22);
+      --surface-border-strong: rgba(142, 124, 195, 0.42);
+      --surface-border-sky: rgba(140, 185, 222, 0.35);
+
+      /* Elegant Warm Typography Colors */
+      --text-primary: #2D2522;        /* Warm espresso ceramic */
+      --text-secondary: #5E544D;      /* Warm taupe */
+      --text-muted: #8E837A;          /* Earthen soft taupe */
+      --text-inverse: #FFFFFF;
+
+      /* Shapes & Radii: Smooth Porcelain Corners & Pill Buttons */
+      --radius-porcelain: 22px;       /* Smooth porcelain corners */
+      --radius-card: 22px;
+      --radius-pill: 999px;          /* Pill-shaped buttons */
+      --radius-sm: 14px;
+      --radius-md: 18px;
+      --radius-lg: 22px;
+      --radius-xl: 26px;
+      --radius-full: 999px;
+
+      /* Soft Ceramic Porcelain Shadows */
+      --shadow-sm: 0 2px 10px rgba(60, 45, 35, 0.04), 0 1px 3px rgba(142, 124, 195, 0.06);
+      --shadow-md: 0 8px 26px rgba(60, 45, 35, 0.05), 0 2px 8px rgba(142, 124, 195, 0.08);
+      --shadow-lg: 0 16px 42px rgba(60, 45, 35, 0.07), 0 4px 14px rgba(142, 124, 195, 0.12);
+      --shadow-porcelain: 0 10px 30px rgba(65, 50, 40, 0.05), 0 2px 8px rgba(142, 124, 195, 0.07);
+
+      /* Typography Systems */
+      --font-serif: 'Playfair Display', Georgia, 'Times New Roman', serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --transition-fast: 160ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-base: 260ms cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ==========================================================================
+       RESET & BASE STYLES
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      background-image: 
+        radial-gradient(circle at 10% 12%, rgba(242, 238, 252, 0.75) 0%, transparent 45%),
+        radial-gradient(circle at 88% 18%, rgba(235, 243, 250, 0.8) 0%, transparent 45%),
+        radial-gradient(circle at 50% 88%, rgba(242, 238, 252, 0.6) 0%, transparent 50%),
+        linear-gradient(to bottom, #F7F3ED, #F4EFE6);
+      background-attachment: fixed;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      color: inherit;
+      outline: none;
+    }
+
+    /* Ambient Warm Sunlight & Delicate Lavender Light */
+    .ambient-glow {
+      position: fixed;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 760px;
+      height: 380px;
+      background: radial-gradient(ellipse at center, rgba(212, 199, 245, 0.35), rgba(235, 243, 250, 0.4), transparent 70%);
+      filter: blur(70px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ==========================================================================
+       HEADINGS & TITLES (Elegant Serif Font 'Playfair Display')
+       ========================================================================== */
+    h1, h2, h3, h4, h5, h6,
+    .brand-text h1,
+    .auth-brand h2,
+    .form-card-title,
+    .metric-title,
+    .due-alerts-title,
+    .rec-headline,
+    .sub-meta h4,
+    .due-bill-info h4,
+    .data-table th,
+    .modal-dialog h3,
+    #aiModalTitle {
+      font-family: var(--font-serif);
+      font-feature-settings: "liga" 1;
+      letter-spacing: -0.015em;
+      color: var(--text-primary);
+    }
+
+    /* ==========================================================================
+       SUBTLE LAVENDER FLOWER FLORAL CORNER MOTIFS
+       ========================================================================== */
+    .glass-card,
+    .ai-assistant-card,
+    .due-alerts-section,
+    .auth-modal,
+    .modal-dialog {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Top-Right Lavender Sprig */
+    .glass-card::before,
+    .ai-assistant-card::before,
+    .due-alerts-section::before,
+    .auth-modal::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 82px;
+      height: 82px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Cpath d='M95 5 C75 20 50 45 30 85' stroke='%238A9B85' stroke-width='1.6' stroke-linecap='round' opacity='0.55'/%3E%3Cpath d='M80 20 C68 25 58 20 52 14' stroke='%238A9B85' stroke-width='1.3' stroke-linecap='round' opacity='0.5'/%3E%3Cpath d='M60 42 C48 48 40 42 36 34' stroke='%238A9B85' stroke-width='1.3' stroke-linecap='round' opacity='0.5'/%3E%3Cpath d='M45 62 C35 68 28 62 25 55' stroke='%238A9B85' stroke-width='1.2' stroke-linecap='round' opacity='0.45'/%3E%3Cellipse cx='92' cy='8' rx='4.5' ry='8' transform='rotate(30 92 8)' fill='%239D8CD7' opacity='0.8'/%3E%3Cellipse cx='86' cy='14' rx='4' ry='7' transform='rotate(15 86 14)' fill='%23B8A9E8' opacity='0.8'/%3E%3Cellipse cx='78' cy='22' rx='4.2' ry='7.2' transform='rotate(38 78 22)' fill='%238E7CC3' opacity='0.85'/%3E%3Cellipse cx='70' cy='30' rx='3.8' ry='6.8' transform='rotate(25 70 30)' fill='%239D8CD7' opacity='0.8'/%3E%3Cellipse cx='60' cy='38' rx='3.6' ry='6.5' transform='rotate(35 60 38)' fill='%23B8A9E8' opacity='0.75'/%3E%3Cellipse cx='52' cy='48' rx='3.4' ry='6' transform='rotate(22 52 48)' fill='%238E7CC3' opacity='0.8'/%3E%3Cellipse cx='42' cy='58' rx='3.2' ry='5.5' transform='rotate(30 42 58)' fill='%239D8CD7' opacity='0.75'/%3E%3Cellipse cx='34' cy='68' rx='3' ry='5' transform='rotate(20 34 68)' fill='%23B8A9E8' opacity='0.7'/%3E%3Cellipse cx='88' cy='18' rx='3.5' ry='6' transform='rotate(-25 88 18)' fill='%23C5BAEB' opacity='0.7'/%3E%3Cellipse cx='72' cy='34' rx='3.2' ry='5.8' transform='rotate(-20 72 34)' fill='%239D8CD7' opacity='0.7'/%3E%3Cellipse cx='54' cy='52' rx='3' ry='5.2' transform='rotate(-15 54 52)' fill='%23C5BAEB' opacity='0.65'/%3E%3Cpath d='M68 25 C64 22 62 18 64 15 C66 18 70 21 68 25 Z' fill='%238A9B85' opacity='0.5'/%3E%3Cpath d='M48 45 C44 42 42 38 44 35 C46 38 50 41 48 45 Z' fill='%238A9B85' opacity='0.5'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: top right;
+      pointer-events: none;
+      opacity: 0.42;
+      transition: opacity var(--transition-base), transform var(--transition-base);
+      z-index: 0;
+    }
+
+    /* Bottom-Left Lavender Sprig */
+    .glass-card::after,
+    .ai-assistant-card::after,
+    .due-alerts-section::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 66px;
+      height: 66px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none'%3E%3Cpath d='M5 95 C25 80 50 55 70 15' stroke='%238A9B85' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3Cellipse cx='10' cy='90' rx='4' ry='7' transform='rotate(-30 10 90)' fill='%239D8CD7' opacity='0.75'/%3E%3Cellipse cx='18' cy='82' rx='3.8' ry='6.5' transform='rotate(-20 18 82)' fill='%23B8A9E8' opacity='0.75'/%3E%3Cellipse cx='28' cy='72' rx='3.6' ry='6.2' transform='rotate(-35 28 72)' fill='%238E7CC3' opacity='0.8'/%3E%3Cellipse cx='38' cy='62' rx='3.4' ry='5.8' transform='rotate(-25 38 62)' fill='%239D8CD7' opacity='0.75'/%3E%3Cellipse cx='48' cy='50' rx='3.2' ry='5.4' transform='rotate(-32 48 50)' fill='%23B8A9E8' opacity='0.7'/%3E%3Cellipse cx='58' cy='38' rx='3' ry='5' transform='rotate(-22 58 38)' fill='%238E7CC3' opacity='0.75'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: bottom left;
+      pointer-events: none;
+      opacity: 0.35;
+      transition: opacity var(--transition-base);
+      z-index: 0;
+    }
+
+    .glass-card:hover::before,
+    .ai-assistant-card:hover::before,
+    .due-alerts-section:hover::before {
+      opacity: 0.75;
+      transform: scale(1.05);
+    }
+
+    .glass-card:hover::after,
+    .ai-assistant-card:hover::after,
+    .due-alerts-section:hover::after {
+      opacity: 0.65;
+    }
+
+    /* ==========================================================================
+       LAYOUT & SHELL
+       ========================================================================== */
+    .app-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px 32px 60px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 16px 16px 40px 16px;
+        gap: 20px;
+      }
+    }
+
+    /* Porcelain Card Containers (Lavender & Pastel Sky Blue) */
+    .glass-card {
+      background: var(--card-lavender);
+      border: 1px solid var(--surface-border);
+      border-radius: var(--radius-porcelain);
+      padding: 26px;
+      box-shadow: var(--shadow-porcelain);
+      transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-base);
+    }
+
+    .glass-card:hover {
+      border-color: var(--surface-border-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-lavender {
+      background: var(--card-lavender) !important;
+      border: 1px solid rgba(142, 124, 195, 0.28) !important;
+    }
+
+    .card-sky {
+      background: var(--card-sky) !important;
+      border: 1px solid rgba(140, 185, 222, 0.35) !important;
+    }
+
+    /* ==========================================================================
+       HEADER & NAVIGATION (Glazed Porcelain & Language Toggle)
+       ========================================================================== */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 28px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(142, 124, 195, 0.22);
+      border-radius: var(--radius-porcelain);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(142, 124, 195, 0.4);
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .brand-text h1 span {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-style: italic;
+    }
+
+    .brand-tagline {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      background: #FFFFFF;
+      padding: 4px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(142, 124, 195, 0.22);
+      box-shadow: inset 0 1px 3px rgba(60, 40, 30, 0.03);
+    }
+
+    .nav-tab-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: var(--radius-pill) !important;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-base);
+    }
+
+    .nav-tab-btn:hover {
+      color: var(--accent-lavender-dark);
+      background: rgba(242, 238, 252, 0.6);
+    }
+
+    .nav-tab-btn.active {
+      background: var(--accent-lavender);
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px rgba(142, 124, 195, 0.35);
+    }
+
+    /* Language Switcher Component */
+    .lang-toggle-wrap {
+      display: flex;
+      align-items: center;
+      background: #FFFFFF;
+      padding: 3px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(142, 124, 195, 0.26);
+      box-shadow: var(--shadow-sm);
+      gap: 2px;
+    }
+
+    .lang-btn {
+      padding: 5px 13px;
+      border-radius: var(--radius-pill) !important;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .lang-btn:hover {
+      color: var(--accent-lavender-dark);
+      background: rgba(242, 238, 252, 0.5);
+    }
+
+    .lang-btn.active {
+      background: var(--accent-lavender);
+      color: #FFFFFF;
+      box-shadow: 0 2px 8px rgba(142, 124, 195, 0.35);
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 5px 14px 5px 6px;
+      background: #FFFFFF;
+      border: 1px solid rgba(142, 124, 195, 0.22);
+      border-radius: var(--radius-pill);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #8CB9DE, #9D8CD7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: #fff;
+      text-transform: uppercase;
+      font-family: var(--font-serif);
+    }
+
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .user-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .user-role {
+      font-size: 0.72rem;
+      color: var(--accent-lavender-dark);
+      font-weight: 600;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: var(--radius-pill) !important;
+      display: flex;
+      align-items: center;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-logout:hover {
+      color: var(--color-danger);
+      background: var(--color-danger-bg);
+    }
+
+    /* ==========================================================================
+       BUTTONS (All Pill-Shaped with border-radius: 999px)
+       ========================================================================== */
+    .btn,
+    .btn-primary,
+    .btn-secondary,
+    .btn-sm,
+    .btn-danger-ghost,
+    .btn-logout,
+    .type-toggle-btn,
+    .auth-tab-btn,
+    .quick-chip {
+      border-radius: var(--radius-pill) !important;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 22px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #FFFFFF;
+      box-shadow: 0 4px 16px rgba(142, 124, 195, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(142, 124, 195, 0.48);
+    }
+
+    .btn-secondary {
+      background: #FFFFFF;
+      border-color: rgba(142, 124, 195, 0.3);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary:hover {
+      background: var(--card-lavender);
+      border-color: var(--accent-lavender);
+      color: var(--accent-lavender-dark);
+    }
+
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger-ghost {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-danger-ghost:hover {
+      color: var(--color-danger);
+      background: var(--color-danger-bg);
+      border-color: var(--color-danger-border);
+    }
+
+    /* ==========================================================================
+       FORM INPUT CONTROLS (Porcelain Finish)
+       ========================================================================== */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .input-field, .select-field {
+      background: #FFFFFF;
+      border: 1px solid rgba(142, 124, 195, 0.28);
+      border-radius: var(--radius-pill);
+      padding: 11px 18px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      transition: all var(--transition-fast);
+      width: 100%;
+      box-shadow: inset 0 1px 3px rgba(60, 40, 30, 0.02);
+    }
+
+    .input-field:focus, .select-field:focus {
+      border-color: var(--accent-lavender);
+      box-shadow: 0 0 0 3px rgba(142, 124, 195, 0.22);
+      background: #FFFFFF;
+    }
+
+    .input-field::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Currency formatted typography */
+    .mono-num {
+      font-family: var(--font-mono);
+      font-feature-settings: "tnum";
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ==========================================================================
+       SUMMARY METRICS SECTION (Porcelain Corners: border-radius: 22px)
+       ========================================================================== */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 1100px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 580px) {
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .metric-card {
+      position: relative;
+      overflow: hidden;
+      padding: 24px;
+      border-radius: var(--radius-porcelain);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-porcelain);
+      transition: transform var(--transition-base), border-color var(--transition-base), box-shadow var(--transition-base);
+    }
+
+    .metric-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .metric-card.net-balance {
+      background: var(--card-lavender);
+      border: 1px solid rgba(142, 124, 195, 0.32);
+    }
+
+    .metric-card.income {
+      background: var(--card-sky);
+      border: 1px solid rgba(140, 185, 222, 0.38);
+    }
+
+    .metric-card.expenses {
+      background: var(--card-lavender);
+      border: 1px solid rgba(192, 74, 88, 0.25);
+    }
+
+    .metric-card.subscriptions {
+      background: var(--card-sky);
+      border: 1px solid rgba(140, 185, 222, 0.38);
+    }
+
+    .metric-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .metric-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      letter-spacing: -0.01em;
+    }
+
+    .metric-icon-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .icon-income {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+    }
+
+    .icon-expenses {
+      background: var(--color-danger-bg);
+      color: var(--color-danger);
+    }
+
+    .icon-balance {
+      background: rgba(142, 124, 195, 0.18);
+      color: var(--accent-lavender-dark);
+    }
+
+    .icon-subs {
+      background: rgba(140, 185, 222, 0.25);
+      color: var(--accent-sky-dark);
+    }
+
+    .metric-body {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .metric-value {
+      font-size: 1.95rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text-primary);
+    }
+
+    .metric-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      border-top: 1px solid rgba(142, 124, 195, 0.12);
+      padding-top: 10px;
+    }
+
+    .trend-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    .trend-pill.positive {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+      border: 1px solid var(--color-success-border);
+    }
+
+    .trend-pill.negative {
+      background: var(--color-danger-bg);
+      color: var(--color-danger);
+      border: 1px solid var(--color-danger-border);
+    }
+
+    .trend-pill.neutral {
+      background: #FFFFFF;
+      color: var(--accent-lavender-dark);
+      border: 1px solid rgba(142, 124, 195, 0.25);
+    }
+
+    /* ==========================================================================
+       DUE SOON BILLS BANNER (7-DAY ALERT SECTION - Pastel Rose / Pink Tint Highlight)
+       ========================================================================== */
+    .due-alerts-section {
+      background: var(--card-rose-alert) !important;
+      background: linear-gradient(135deg, var(--card-rose-alert-alt) 0%, var(--card-rose-alert) 100%) !important;
+      border: 1.5px solid var(--border-rose-alert) !important;
+      border-radius: var(--radius-porcelain);
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 8px 30px rgba(244, 166, 182, 0.24), var(--shadow-porcelain);
+    }
+
+    .due-alerts-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .due-alerts-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #9B2C42 !important;
+    }
+
+    .pulsing-alert-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: var(--radius-pill);
+      background-color: #E11D48 !important;
+      box-shadow: 0 0 10px rgba(225, 29, 72, 0.5) !important;
+      animation: alertPulse 1.8s infinite;
+    }
+
+    @keyframes alertPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.25); }
+    }
+
+    #dueAlertCountBadge {
+      background: #FFFFFF !important;
+      color: #9B2C42 !important;
+      border: 1px solid var(--border-rose-alert) !important;
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .due-cards-row {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 14px;
+    }
+
+    .due-bill-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(244, 166, 182, 0.45);
+      border-radius: var(--radius-porcelain);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-fast);
+    }
+
+    .due-bill-card:hover {
+      border-color: #E11D48;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(244, 166, 182, 0.28);
+    }
+
+    .due-bill-card.urgent {
+      border-color: #E11D48;
+      background: #FFF8F9;
+    }
+
+    .due-bill-info h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .due-bill-meta {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .due-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: var(--radius-pill);
+    }
+
+    .due-tag.today {
+      background: #E11D48;
+      color: #fff;
+    }
+
+    .due-tag.soon {
+      background: #FDF2F4;
+      color: #9B2C42;
+      border: 1px solid var(--border-rose-alert);
+    }
+
+    .due-bill-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .due-amount {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    /* ==========================================================================
+       AI FINANCIAL ASSISTANT PANEL
+       ========================================================================== */
+    .ai-assistant-card {
+      position: relative;
+      background: linear-gradient(135deg, var(--card-lavender) 0%, var(--card-sky) 100%);
+      border: 1.5px solid rgba(142, 124, 195, 0.35);
+      border-radius: var(--radius-porcelain);
+      padding: 28px;
+      box-shadow: var(--shadow-porcelain), 0 0 24px rgba(142, 124, 195, 0.12);
+    }
+
+    .ai-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .ai-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .ai-sparkle-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #9D8CD7, #E8A8BF);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(157, 140, 215, 0.4);
+      animation: pulseGlow 3.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(157, 140, 215, 0.35); }
+      50% { transform: scale(1.04); box-shadow: 0 6px 20px rgba(232, 168, 191, 0.5); }
+    }
+
+    .ai-title-wrap h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ai-title-wrap p {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+    }
+
+    .ai-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-recommendations-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 960px) {
+      .ai-recommendations-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ai-rec-card {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(142, 124, 195, 0.22);
+      border-radius: var(--radius-porcelain);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-base);
+    }
+
+    .ai-rec-card:hover {
+      background: #FFFFFF;
+      border-color: var(--accent-lavender);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .rec-tag-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .rec-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.03em;
+    }
+
+    .badge-urgent {
+      background: var(--color-danger-bg);
+      color: var(--color-danger);
+      border: 1px solid var(--color-danger-border);
+    }
+
+    .badge-opt {
+      background: var(--card-sky);
+      color: var(--accent-sky-dark);
+      border: 1px solid rgba(140, 185, 222, 0.4);
+    }
+
+    .badge-grow {
+      background: var(--color-success-bg);
+      color: var(--color-success);
+      border: 1px solid var(--color-success-border);
+    }
+
+    .badge-sub {
+      background: var(--card-lavender);
+      color: var(--accent-lavender-dark);
+      border: 1px solid rgba(142, 124, 195, 0.35);
+    }
+
+    .rec-number {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      font-family: var(--font-serif);
+      font-style: italic;
+    }
+
+    .rec-headline {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.35;
+    }
+
+    .rec-body {
+      font-size: 0.86rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      flex-grow: 1;
+    }
+
+    .rec-action-cue {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent-lavender-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(142, 124, 195, 0.12);
+    }
+
+    /* AI quick query row */
+    .ai-quick-query {
+      position: relative;
+      z-index: 1;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(142, 124, 195, 0.18);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .quick-query-label {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-family: var(--font-serif);
+      font-style: italic;
+    }
+
+    .quick-chip {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(142, 124, 195, 0.28);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill) !important;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-fast);
+    }
+
+    .quick-chip:hover {
+      background: var(--card-lavender);
+      color: var(--accent-lavender-dark);
+      border-color: var(--accent-lavender);
+      transform: translateY(-1px);
+    }
+
+    /* ==========================================================================
+       MAIN WORKSPACE TABS & GRIDS
+       ========================================================================== */
+    .view-container {
+      display: none;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .view-container.active {
+      display: flex;
+    }
+
+    .ledger-grid {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 28px;
+    }
+
+    @media (max-width: 1024px) {
+      .ledger-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .subs-grid {
+      display: grid;
+      grid-template-columns: 390px 1fr;
+      gap: 28px;
+    }
+
+    @media (max-width: 1024px) {
+      .subs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .form-card-desc {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .form-stack {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .type-toggle-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #FFFFFF;
+      padding: 4px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(142, 124, 195, 0.25);
+      gap: 4px;
+      box-shadow: inset 0 1px 3px rgba(60, 40, 30, 0.03);
+    }
+
+    .type-toggle-btn {
+      padding: 9px;
+      border-radius: var(--radius-pill) !important;
+      border: none;
+      background: transparent;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all var(--transition-base);
+    }
+
+    .type-toggle-btn.active-income {
+      background: var(--color-success);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(59, 122, 87, 0.35);
+    }
+
+    .type-toggle-btn.active-expense {
+      background: var(--color-danger);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(192, 74, 88, 0.35);
+    }
+
+    /* ==========================================================================
+       BROWSABLE TABLE & CONTROLS (Porcelain Aesthetic)
+       ========================================================================== */
+    .table-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .table-controls {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex-grow: 1;
+      min-width: 220px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent-lavender);
+      pointer-events: none;
+    }
+
+    .search-input {
+      padding-left: 40px;
+    }
+
+    .table-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      overflow-x: auto;
+      border-radius: var(--radius-porcelain);
+      border: 1px solid rgba(142, 124, 195, 0.22);
+      background: #FFFFFF;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    .data-table th {
+      background: #F8F5FD;
+      color: var(--text-secondary);
+      font-weight: 700;
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(142, 124, 195, 0.2);
+      white-space: nowrap;
+      text-transform: uppercase;
+      font-size: 0.76rem;
+      letter-spacing: 0.04em;
+    }
+
+    .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid rgba(142, 124, 195, 0.1);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr {
+      transition: background var(--transition-fast);
+    }
+
+    .data-table tbody tr:hover {
+      background: rgba(242, 238, 252, 0.45);
+    }
+
+    /* Category Pill Badges (Watercolor Japandi Pastel Tones) */
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .cat-food { background: #FDF3E7; color: #9A6218; border: 1px solid #F5D7B2; }
+    .cat-rent { background: #F2EEFC; color: #6C59A4; border: 1px solid #D8CFF2; }
+    .cat-utilities { background: #EBF3FA; color: #356D9B; border: 1px solid #C4DDF0; }
+    .cat-transport { background: #FBEFF2; color: #A6445B; border: 1px solid #F3CAD3; }
+    .cat-salary { background: #EBF7EE; color: #2E7246; border: 1px solid #C5E7CD; }
+    .cat-entertainment { background: #F6EDFC; color: #7B4CA4; border: 1px solid #DEC5F2; }
+    .cat-other { background: #F4EFEA; color: #6D6258; border: 1px solid #DDD3C8; }
+
+    .amount-income {
+      color: var(--color-success);
+      font-weight: 700;
+    }
+
+    .amount-expense {
+      color: var(--color-danger);
+      font-weight: 700;
+    }
+
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-muted);
+    }
+
+    .empty-state svg {
+      color: var(--accent-lavender);
+      opacity: 0.6;
+    }
+
+    /* ==========================================================================
+       SUBSCRIPTIONS CARDS & GRID
+       ========================================================================== */
+    .subs-cards-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 18px;
+    }
+
+    .sub-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(142, 124, 195, 0.22);
+      border-radius: var(--radius-porcelain);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-base);
+      position: relative;
+    }
+
+    .sub-card:hover {
+      border-color: var(--accent-lavender);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .sub-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .sub-logo-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sub-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-pill);
+      background: var(--card-lavender);
+      border: 1px solid rgba(142, 124, 195, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent-lavender-dark);
+      font-family: var(--font-serif);
+    }
+
+    .sub-meta h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sub-freq-pill {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .sub-pricing {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .sub-price-val {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sub-period {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .sub-details-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      background: #F7F3ED;
+      padding: 10px 14px;
+      border-radius: var(--radius-pill);
+    }
+
+    .sub-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid rgba(142, 124, 195, 0.12);
+      padding-top: 12px;
+    }
+
+    /* ==========================================================================
+       ANALYTICS & CHARTS SECTION
+       ========================================================================== */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-container {
+      position: relative;
+      height: 280px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ==========================================================================
+       MODALS & AUTH OVERLAY
+       ========================================================================== */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 37, 34, 0.52);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: opacity var(--transition-base), visibility var(--transition-base);
+    }
+
+    .auth-overlay.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .auth-modal {
+      width: 100%;
+      max-width: 450px;
+      background: var(--card-lavender);
+      border: 1.5px solid rgba(142, 124, 195, 0.35);
+      border-radius: var(--radius-porcelain);
+      padding: 38px 34px;
+      box-shadow: var(--shadow-lg), 0 0 45px rgba(142, 124, 195, 0.18);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+    }
+
+    .auth-brand {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .auth-tabs {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #FFFFFF;
+      border: 1px solid rgba(142, 124, 195, 0.25);
+      padding: 4px;
+      border-radius: var(--radius-pill);
+    }
+
+    .auth-tab-btn {
+      padding: 9px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: var(--radius-pill) !important;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .auth-tab-btn.active {
+      background: var(--accent-lavender);
+      color: #FFFFFF;
+      box-shadow: 0 2px 10px rgba(142, 124, 195, 0.3);
+    }
+
+    .auth-form {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .demo-login-callout {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      border-top: 1px solid rgba(142, 124, 195, 0.18);
+      padding-top: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 37, 34, 0.52);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-base);
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-dialog {
+      background: var(--card-lavender);
+      border: 1.5px solid rgba(142, 124, 195, 0.35);
+      border-radius: var(--radius-porcelain);
+      padding: 30px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* ==========================================================================
+       TOAST NOTIFICATION ENGINE
+       ========================================================================== */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: #FFFFFF;
+      border: 1px solid rgba(142, 124, 195, 0.3);
+      border-radius: var(--radius-porcelain);
+      padding: 13px 20px;
+      color: var(--text-primary);
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow-md);
+      animation: toastSlideIn 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      max-width: 380px;
+    }
+
+    @keyframes toastSlideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast.success { border-color: var(--color-success); }
+    .toast.error { border-color: var(--color-danger); }
+    .toast.info { border-color: var(--accent-lavender); }
+
+    /* Utilities */
+    .flex-center { display: flex; align-items: center; justify-content: center; }
+    .space-between { display: flex; align-items: center; justify-content: space-between; }
+    .text-sm { font-size: 0.82rem; }
+    .text-muted { color: var(--text-muted); }
+    .w-full { width: 100%; }
+    .mt-4 { margin-top: 16px; }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <!-- ==========================================================================
+       AUTHENTICATION OVERLAY (Persistent in localStorage)
+       ========================================================================== -->
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-modal card-lavender">
+      <div class="auth-brand">
+        <div class="brand-logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+        </div>
+        <h2 style="font-size: 1.6rem; font-weight: 700; color: var(--text-primary);">Budget<span style="color: var(--accent-lavender); font-style: italic;">IQ</span></h2>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);" data-i18n="authTagline">Warm Japandi intelligence for your personal finances</p>
+      </div>
+
+      <!-- Sign In / Sign Up switch -->
+      <div class="auth-tabs">
+        <button id="authTabLogin" class="auth-tab-btn active" onclick="switchAuthTab('login')" data-i18n="authSignIn">Sign In</button>
+        <button id="authTabSignup" class="auth-tab-btn" onclick="switchAuthTab('signup')" data-i18n="authCreateAccount">Create Account</button>
+      </div>
+
+      <!-- Auth Form -->
+      <form id="authForm" class="auth-form" onsubmit="handleAuthSubmit(event)">
+        <div id="nameInputGroup" class="input-group" style="display: none;">
+          <label class="input-label" for="authFullName" data-i18n="authFullName">Full Name</label>
+          <input type="text" id="authFullName" class="input-field" placeholder="Alex Morgan" autocomplete="name">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="authEmail" data-i18n="authEmail">Email or Username</label>
+          <input type="text" id="authEmail" class="input-field" placeholder="alex@budgetiq.io" required autocomplete="username">
+        </div>
+
+        <div class="input-group">
+          <label class="input-label" for="authPassword" data-i18n="authPassword">Password</label>
+          <input type="password" id="authPassword" class="input-field" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="authSubmitBtn" class="btn btn-primary w-full" style="padding: 12px;">
+          <span data-i18n="authSubmitSignIn">Sign In to BudgetIQ</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </form>
+
+      <!-- Fast Demo Tester Option -->
+      <div class="demo-login-callout">
+        <p style="font-size: 0.78rem; color: var(--text-muted);" data-i18n="authDemoNote">Competition Evaluator or Quick Demo?</p>
+        <button type="button" class="btn btn-secondary w-full btn-sm" onclick="loginDemoUser()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-lavender)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span data-i18n="authDemoBtn">One-Click Instant Demo Experience</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MAIN APPLICATION SHELL
+       ========================================================================== -->
+  <div class="app-container">
+
+    <!-- Top Navigation Header with Language Toggle -->
+    <header class="app-header">
+      <div class="brand-wrap">
+        <div class="brand-logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Budget<span>IQ</span></h1>
+          <div class="brand-tagline" data-i18n="brandTagline">Intelligent Ledger & Subscription Hub</div>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" data-view="dashboard" onclick="switchView('dashboard')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span data-i18n="navDashboard">Dashboard & Ledger</span>
+        </button>
+        <button class="nav-tab-btn" data-view="subscriptions" onclick="switchView('subscriptions')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <span data-i18n="navSubscriptions">Subscriptions & Bills</span>
+        </button>
+        <button class="nav-tab-btn" data-view="analytics" onclick="switchView('analytics')">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+          <span data-i18n="navAnalytics">Visual Analytics</span>
+        </button>
+      </nav>
+
+      <!-- Active User Profile, Actions & Language Toggle Switch -->
+      <div class="header-nav">
+        <!-- Sleek Language Toggle Switch (English / বাংলা) -->
+        <div class="lang-toggle-wrap" title="Switch Language / ভাষা পরিবর্তন">
+          <button type="button" id="langBtnEn" class="lang-btn active" onclick="setLanguage('en')">
+            <span>EN</span>
+          </button>
+          <button type="button" id="langBtnBn" class="lang-btn" onclick="setLanguage('bn')">
+            <span>বাংলা</span>
+          </button>
+        </div>
+
+        <div class="user-profile-badge">
+          <div id="userAvatar" class="user-avatar">AM</div>
+          <div class="user-details">
+            <span id="userNameDisplay" class="user-name">Alex Morgan</span>
+            <span class="user-role" data-i18n="userRole">Porcelain Edition</span>
+          </div>
+          <button class="btn-logout" title="Sign Out" onclick="handleLogout()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ==========================================================================
+         SUMMARY CARDS (Total Income, Total Expenses, Net Balance, Subscription Cost)
+         ========================================================================== -->
+    <section class="metrics-grid">
+      <!-- Net Balance -->
+      <div class="metric-card net-balance card-lavender">
+        <div class="metric-header">
+          <span class="metric-title" data-i18n="metricNetCashflow">Net Cashflow</span>
+          <div class="metric-icon-wrap icon-balance">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+          </div>
+        </div>
+        <div class="metric-body">
+          <div id="metricNetBalance" class="metric-value mono-num">$0.00</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);" data-i18n="metricNetDesc">Real-time ledger net balance</div>
+        </div>
+        <div class="metric-footer">
+          <span id="metricBalanceStatus" class="trend-pill positive">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline></svg>
+            <span id="metricBalanceStatusText">Surplus</span>
+          </span>
+          <span id="metricSavingsRate" class="mono-num">0% saved</span>
+        </div>
+      </div>
+
+      <!-- Total Income -->
+      <div class="metric-card income card-sky">
+        <div class="metric-header">
+          <span class="metric-title" data-i18n="metricTotalIncome">Total Income</span>
+          <div class="metric-icon-wrap icon-income">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+          </div>
+        </div>
+        <div class="metric-body">
+          <div id="metricTotalIncome" class="metric-value mono-num" style="color: var(--color-success);">$0.00</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);" data-i18n="metricIncomeDesc">Gross earned inflows</div>
+        </div>
+        <div class="metric-footer">
+          <span id="metricIncomeCount" class="text-muted">0 entries</span>
+          <span style="color: var(--color-success); font-weight: 600;" data-i18n="metricReceived">+ Received</span>
+        </div>
+      </div>
+
+      <!-- Total Expenses -->
+      <div class="metric-card expenses card-lavender">
+        <div class="metric-header">
+          <span class="metric-title" data-i18n="metricTotalOutflows">Total Outflows</span>
+          <div class="metric-icon-wrap icon-expenses">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+          </div>
+        </div>
+        <div class="metric-body">
+          <div id="metricTotalExpenses" class="metric-value mono-num" style="color: var(--color-danger);">$0.00</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);" data-i18n="metricOutflowsDesc">Recorded expenditures</div>
+        </div>
+        <div class="metric-footer">
+          <span id="metricExpenseCount" class="text-muted">0 entries</span>
+          <span id="metricExpenseRatio" class="mono-num" style="color: var(--color-danger); font-weight: 600;">0% of income</span>
+        </div>
+      </div>
+
+      <!-- Subscription Monthly Metric -->
+      <div class="metric-card subscriptions card-sky">
+        <div class="metric-header">
+          <span class="metric-title" data-i18n="metricRecurring">Projected Recurring</span>
+          <div class="metric-icon-wrap icon-subs">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </div>
+        </div>
+        <div class="metric-body">
+          <div id="metricMonthlySubs" class="metric-value mono-num" style="color: var(--accent-lavender-dark);">$0.00</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);" data-i18n="metricRecurringDesc">Normalized monthly commitments</div>
+        </div>
+        <div class="metric-footer">
+          <span id="metricSubsCount" class="text-muted">0 Active Bills</span>
+          <span id="metricSubsDueSoon" class="trend-pill neutral" style="cursor: pointer;" onclick="scrollToDueAlerts()">0 Due in 7d</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         VISUAL ALERT CARDS: BILLS DUE WITHIN 7 DAYS (MODULE 3)
+         Highlighted with Delicate Pastel Rose/Pink Tint (#FDE8E8 / #FCE4EC) & Deeper Rose Border
+         ========================================================================== -->
+    <section id="dueAlertsSection" class="due-alerts-section" style="display: none;">
+      <div class="due-alerts-header">
+        <div class="due-alerts-title">
+          <span class="pulsing-alert-dot"></span>
+          <span data-i18n="dueAlertsTitle">Upcoming Due Date Alerts (Next 7 Days)</span>
+        </div>
+        <span id="dueAlertCountBadge" class="trend-pill">2 Bills Requiring Attention</span>
+      </div>
+      <div id="dueAlertsContainer" class="due-cards-row">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         AI FINANCIAL ASSISTANT PANEL
+         ========================================================================== -->
+    <section class="glass-card ai-assistant-card">
+      <div class="ai-header">
+        <div class="ai-title-wrap">
+          <div class="ai-sparkle-badge">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 data-i18n="aiTitle">BudgetIQ Neural Advisory Engine</h2>
+            <p data-i18n="aiSubtitle">Serene algorithmic assessment analyzing your ledger burn rate, expense clusters, and recurring subscriptions</p>
+          </div>
+        </div>
+
+        <div class="ai-actions">
+          <button id="btnRunAiAnalysis" class="btn btn-primary" onclick="generateAiRecommendations(true)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+              <path d="M3 3v5h5"></path>
+              <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+              <path d="M16 21h5v-5"></path>
+            </svg>
+            <span data-i18n="aiBtn">Analyze Ledger & Generate 3 AI Recommendations</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 Natural-Language Budget Recommendations Grid -->
+      <div id="aiRecommendationsContainer" class="ai-recommendations-grid">
+        <!-- Populated via JS Engine -->
+      </div>
+
+      <!-- Interactive Quick Inquiries -->
+      <div class="ai-quick-query">
+        <span class="quick-query-label" data-i18n="aiAskLabel">Ask BudgetIQ Assistant:</span>
+        <button class="quick-chip" onclick="askAiQuestion('Can I afford a $150 weekend treat right now?')" data-i18n="aiChip1">"Can I afford a $150 treat?"</button>
+        <button class="quick-chip" onclick="askAiQuestion('How do I reduce my subscription burden?')" data-i18n="aiChip2">"How do I trim subscriptions?"</button>
+        <button class="quick-chip" onclick="askAiQuestion('How does my 50/30/20 balance look?')" data-i18n="aiChip3">"Evaluate my 50/30/20 balance"</button>
+        <button class="quick-chip" onclick="askAiQuestion('What is my biggest financial leak?')" data-i18n="aiChip4">"Find my biggest spending leak"</button>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         VIEW 1: DASHBOARD & MODULE 1 (EXPENSE & INCOME LEDGER ENGINE)
+         ========================================================================== -->
+    <main id="viewDashboard" class="view-container active">
+      <div class="ledger-grid">
+        <!-- Left Column: Add Transaction Form (Pastel Sky Blue Container) -->
+        <section class="glass-card card-sky">
+          <div class="form-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-lavender)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span data-i18n="formRecordTitle">Record Transaction</span>
+          </div>
+          <div class="form-card-desc" data-i18n="formRecordDesc">Log your income or expense entries into the financial ledger engine</div>
+
+          <form id="transactionForm" onsubmit="handleTransactionSubmit(event)">
+            <div class="form-stack">
+              <!-- Type toggle (Income / Expense) -->
+              <div class="input-group">
+                <label class="input-label" data-i18n="formFlow">Transaction Flow</label>
+                <div class="type-toggle-group">
+                  <button type="button" id="btnTypeExpense" class="type-toggle-btn active-expense" onclick="setTransactionType('expense')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+                    <span data-i18n="btnExpense">Expense (-)</span>
+                  </button>
+                  <button type="button" id="btnTypeIncome" class="type-toggle-btn" onclick="setTransactionType('income')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                    <span data-i18n="btnIncome">Income (+)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Title -->
+              <div class="input-group">
+                <label class="input-label" for="txTitle" data-i18n="formTitle">Title / Description</label>
+                <input type="text" id="txTitle" class="input-field" placeholder="e.g., Whole Foods Groceries, Tech Salary" data-i18n-placeholder="txTitlePlaceholder" required maxlength="60">
+              </div>
+
+              <!-- Amount & Date Grid -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="input-group">
+                  <label class="input-label" for="txAmount" data-i18n="formAmount">Amount ($)</label>
+                  <input type="number" id="txAmount" class="input-field mono-num" placeholder="0.00" step="0.01" min="0.01" required>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label" for="txDate" data-i18n="formDate">Transaction Date</label>
+                  <input type="date" id="txDate" class="input-field" required>
+                </div>
+              </div>
+
+              <!-- Category Dropdown (Food, Rent, Utilities, Transport, Salary + Extras) -->
+              <div class="input-group">
+                <label class="input-label" for="txCategory" data-i18n="formCategory">Category</label>
+                <select id="txCategory" class="select-field" required>
+                  <option value="Food" data-i18n="catFood">Food & Groceries</option>
+                  <option value="Rent" data-i18n="catRent">Rent & Housing</option>
+                  <option value="Utilities" data-i18n="catUtilities">Utilities & Power</option>
+                  <option value="Transport" data-i18n="catTransport">Transport & Fuel</option>
+                  <option value="Salary" data-i18n="catSalary">Salary & Earnings</option>
+                  <option value="Entertainment" data-i18n="catEntertainment">Entertainment & Leisure</option>
+                  <option value="Health" data-i18n="catHealth">Healthcare & Wellness</option>
+                  <option value="Other" data-i18n="catOther">Other / Misc</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-full" style="margin-top: 6px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                <span data-i18n="btnCommit">Commit to Ledger</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Quick Seed or Reset Actions -->
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(142, 124, 195, 0.18); display: flex; justify-content: space-between; align-items: center;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="seedSampleLedgerData()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span data-i18n="btnLoadSample">Load Sample Data</span>
+            </button>
+            <button type="button" class="btn btn-danger-ghost btn-sm" onclick="confirmClearTransactions()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              <span data-i18n="btnResetLedger">Reset Ledger</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Right Column: Browsable Table with Search, Filter & Delete (Soft Light Lavender Container) -->
+        <section class="glass-card card-lavender table-panel">
+          <div class="space-between" style="flex-wrap: wrap; gap: 12px; position: relative; z-index: 1;">
+            <div>
+              <div class="form-card-title" style="margin-bottom: 2px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-lavender-dark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <span data-i18n="ledgerTitle">Ledger Records</span>
+              </div>
+              <div class="text-sm text-muted" data-i18n="ledgerDesc">Real-time searchable transaction history</div>
+            </div>
+
+            <!-- Export or summary pill -->
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-secondary btn-sm" onclick="exportLedgerCsv()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span data-i18n="btnExportCsv">Export CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Controls Bar: Search, Category Filter, Type Filter -->
+          <div class="table-controls">
+            <!-- Search bar -->
+            <div class="search-wrap">
+              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="txSearchInput" class="input-field search-input" placeholder="Search by title, note, or date..." data-i18n-placeholder="searchPlaceholder" oninput="handleLedgerSearch()">
+            </div>
+
+            <!-- Category filter -->
+            <div style="min-width: 150px;">
+              <select id="filterCategory" class="select-field" onchange="applyLedgerFilters()">
+                <option value="ALL" data-i18n="filterAllCategories">All Categories</option>
+                <option value="Food" data-i18n="catFood">Food</option>
+                <option value="Rent" data-i18n="catRent">Rent</option>
+                <option value="Utilities" data-i18n="catUtilities">Utilities</option>
+                <option value="Transport" data-i18n="catTransport">Transport</option>
+                <option value="Salary" data-i18n="catSalary">Salary</option>
+                <option value="Entertainment" data-i18n="catEntertainment">Entertainment</option>
+                <option value="Health" data-i18n="catHealth">Health</option>
+                <option value="Other" data-i18n="catOther">Other</option>
+              </select>
+            </div>
+
+            <!-- Type filter -->
+            <div style="min-width: 130px;">
+              <select id="filterType" class="select-field" onchange="applyLedgerFilters()">
+                <option value="ALL" data-i18n="filterAllTypes">All Types</option>
+                <option value="income" data-i18n="filterIncomeOnly">Income Only</option>
+                <option value="expense" data-i18n="filterExpenseOnly">Expense Only</option>
+              </select>
+            </div>
+
+            <!-- Sort option -->
+            <div style="min-width: 130px;">
+              <select id="filterSort" class="select-field" onchange="applyLedgerFilters()">
+                <option value="date-desc" data-i18n="sortNewest">Newest First</option>
+                <option value="date-asc" data-i18n="sortOldest">Oldest First</option>
+                <option value="amount-desc" data-i18n="sortHighest">Highest $</option>
+                <option value="amount-asc" data-i18n="sortLowest">Lowest $</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-wrapper">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th id="thDate" data-i18n="thDate">Date</th>
+                  <th id="thTitle" data-i18n="thTitle">Transaction Title</th>
+                  <th id="thCategory" data-i18n="thCategory">Category</th>
+                  <th id="thType" data-i18n="thType">Type</th>
+                  <th id="thAmount" style="text-align: right;" data-i18n="thAmount">Amount</th>
+                  <th id="thAction" style="text-align: center; width: 60px;" data-i18n="thAction">Action</th>
+                </tr>
+              </thead>
+              <tbody id="ledgerTableBody">
+                <!-- Rendered dynamically via JS -->
+              </tbody>
+            </table>
+
+            <div id="ledgerEmptyState" class="empty-state" style="display: none;">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+              <div style="font-weight: 700; color: var(--text-primary); font-family: var(--font-serif); font-size: 1.1rem;" data-i18n="noTxTitle">No Transactions Found</div>
+              <p style="font-size: 0.84rem;" data-i18n="noTxDesc">Adjust your filter criteria or use the form on the left to log your first record.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ==========================================================================
+         VIEW 2: MODULE 3 (SUBSCRIPTION & RECURRING BILL MANAGER)
+         ========================================================================== -->
+    <main id="viewSubscriptions" class="view-container">
+      <div class="subs-grid">
+        <!-- Form to Log Recurring Bills (Soft Light Lavender Container) -->
+        <section class="glass-card card-lavender">
+          <div class="form-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-lavender-dark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+            <span data-i18n="subsFormTitle">Track Recurring Bill</span>
+          </div>
+          <div class="form-card-desc" data-i18n="subsFormDesc">Log ongoing subscriptions (Netflix, Internet, Rent, etc.) with automated 7-day proximity alerts</div>
+
+          <form id="subscriptionForm" onsubmit="handleSubscriptionSubmit(event)">
+            <div class="form-stack">
+              <!-- Service / Bill Title -->
+              <div class="input-group">
+                <label class="input-label" for="subName" data-i18n="subsServiceName">Service / Bill Name</label>
+                <input type="text" id="subName" class="input-field" placeholder="e.g., Netflix Premium, Fiber Internet, Gym" required maxlength="50">
+              </div>
+
+              <!-- Cost Amount & Frequency -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="input-group">
+                  <label class="input-label" for="subAmount" data-i18n="subsCost">Cost ($)</label>
+                  <input type="number" id="subAmount" class="input-field mono-num" placeholder="19.99" step="0.01" min="0.01" required>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label" for="subFrequency" data-i18n="subsCadence">Billing Cadence</label>
+                  <select id="subFrequency" class="select-field" required>
+                    <option value="monthly" data-i18n="cadMonthly">Monthly</option>
+                    <option value="yearly" data-i18n="cadYearly">Yearly</option>
+                    <option value="weekly" data-i18n="cadWeekly">Weekly</option>
+                    <option value="quarterly" data-i18n="cadQuarterly">Quarterly</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Next Billing Date & Category -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="input-group">
+                  <label class="input-label" for="subNextDate" data-i18n="subsNextDate">Next Billing Date</label>
+                  <input type="date" id="subNextDate" class="input-field" required>
+                </div>
+
+                <div class="input-group">
+                  <label class="input-label" for="subCategory" data-i18n="subsCategory">Category</label>
+                  <select id="subCategory" class="select-field" required>
+                    <option value="Entertainment" data-i18n="subsCatEntertainment">Entertainment</option>
+                    <option value="Utilities" data-i18n="subsCatUtilities">Utilities & Telecom</option>
+                    <option value="Rent" data-i18n="subsCatRent">Housing / Rent</option>
+                    <option value="Software" data-i18n="subsCatSoftware">Software & Cloud</option>
+                    <option value="Wellness" data-i18n="subsCatWellness">Fitness & Health</option>
+                    <option value="Other" data-i18n="subsCatOther">Other</option>
+                  </select>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary w-full" style="margin-top: 6px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span data-i18n="subsBtnAdd">Add Recurring Bill</span>
+              </button>
+            </div>
+          </form>
+
+          <!-- Quick Seed Subscriptions -->
+          <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(142, 124, 195, 0.18); display: flex; justify-content: space-between; align-items: center;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="seedSampleSubscriptions()">
+              <span data-i18n="subsBtnPreset">Load Preset Bills (Netflix, Internet, Rent...)</span>
+            </button>
+            <button type="button" class="btn btn-danger-ghost btn-sm" onclick="confirmClearSubscriptions()">
+              <span data-i18n="subsBtnClear">Clear Bills</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Right Column: Subscriptions Showcase Grid (Pastel Sky Blue Container) -->
+        <section class="glass-card card-sky table-panel">
+          <div class="space-between" style="flex-wrap: wrap; gap: 12px; position: relative; z-index: 1;">
+            <div>
+              <div class="form-card-title" style="margin-bottom: 2px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-sky-dark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span data-i18n="subsShowcaseTitle">Active Subscriptions & Recurring Bills</span>
+              </div>
+              <div class="text-sm text-muted" data-i18n="subsShowcaseDesc">All continuous commitments converted to normalized monthly burn</div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span id="subTotalProjectedDisplay" class="trend-pill" style="background: rgba(142, 124, 195, 0.15); color: var(--accent-lavender-dark); font-size: 0.84rem; padding: 6px 14px; border: 1px solid rgba(142, 124, 195, 0.3);">
+                Projected: $0.00 / mo
+              </span>
+            </div>
+          </div>
+
+          <!-- Subscription cards container -->
+          <div id="subsCardsContainer" class="subs-cards-grid">
+            <!-- Populated via JS -->
+          </div>
+
+          <div id="subsEmptyState" class="empty-state" style="display: none;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <div style="font-weight: 700; color: var(--text-primary); font-family: var(--font-serif); font-size: 1.1rem;" data-i18n="noSubsTitle">No Recurring Bills Tracked</div>
+            <p style="font-size: 0.84rem;" data-i18n="noSubsDesc">Use the form on the left or click "Load Preset Bills" to populate essential recurring expenses.</p>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- ==========================================================================
+         VIEW 3: VISUAL ANALYTICS & INSIGHT CHARTS
+         ========================================================================== -->
+    <main id="viewAnalytics" class="view-container">
+      <div class="analytics-grid">
+        <!-- Expense by Category Doughnut (Soft Light Lavender Container) -->
+        <section class="glass-card card-lavender">
+          <div class="form-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-lavender-dark)" stroke-width="2.5"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></svg>
+            <span data-i18n="chartCategoryTitle">Spending Breakdown by Category</span>
+          </div>
+          <p class="text-sm text-muted" style="margin-bottom: 16px;" data-i18n="chartCategoryDesc">Distribution of recorded outflows across expense groups</p>
+          <div class="chart-container">
+            <canvas id="categoryChart"></canvas>
+          </div>
+        </section>
+
+        <!-- Income vs Outflows Comparison (Pastel Sky Blue Container) -->
+        <section class="glass-card card-sky">
+          <div class="form-card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+            <span data-i18n="chartCashflowTitle">Cashflow Proportions</span>
+          </div>
+          <p class="text-sm text-muted" style="margin-bottom: 16px;" data-i18n="chartCashflowDesc">Gross inflows versus total expenses and recurring commitments</p>
+          <div class="chart-container">
+            <canvas id="cashflowChart"></canvas>
+          </div>
+        </section>
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ==========================================================================
+       AI INQUIRY / DETAIL MODAL (Soft Lavender Porcelain Dialog)
+       ========================================================================== -->
+  <div id="aiModal" class="modal-backdrop">
+    <div class="modal-dialog card-lavender">
+      <div class="space-between" style="margin-bottom: 14px; position: relative; z-index: 1;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="ai-sparkle-badge" style="width: 34px; height: 34px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"></path></svg>
+          </div>
+          <h3 id="aiModalTitle" style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);" data-i18n="modalAdvisorTitle">AI Financial Advisor</h3>
+        </div>
+        <button class="btn-danger-ghost" onclick="closeAiModal()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <div id="aiModalContent" style="color: var(--text-secondary); font-size: 0.94rem; line-height: 1.65; margin-bottom: 22px; position: relative; z-index: 1;">
+        <!-- AI Response body -->
+      </div>
+      <button class="btn btn-secondary w-full" style="position: relative; z-index: 1;" onclick="closeAiModal()" data-i18n="modalCloseBtn">Close Insight</button>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT APPLICATION LOGIC WITH BILINGUAL ENGINE (English / বাংলা)
+       ========================================================================== -->
+  <script>
+    /* ==========================================================================
+       1. GLOBAL STATE & STORAGE REPOSITORY
+       ========================================================================== */
+    const STORAGE_KEY_USERS = 'budgetiq_users_db';
+    const STORAGE_KEY_SESSION = 'budgetiq_active_session';
+    const STORAGE_KEY_PREFIX = 'budgetiq_data_';
+    const STORAGE_KEY_LANG = 'budgetiq_lang';
+
+    let currentLang = localStorage.getItem(STORAGE_KEY_LANG) || 'en';
+    let currentUser = null;
+    let transactions = [];
+    let subscriptions = [];
+    let currentTransactionType = 'expense';
+    let activeView = 'dashboard';
+
+    // Chart instances
+    let categoryChartInstance = null;
+    let cashflowChartInstance = null;
+
+    /* ==========================================================================
+       2. BILINGUAL DICTIONARY & I18N ENGINE (English & বাংলা)
+       ========================================================================== */
+    const I18N = {
+      en: {
+        brandTagline: "Intelligent Ledger & Subscription Hub",
+        navDashboard: "Dashboard & Ledger",
+        navSubscriptions: "Subscriptions & Bills",
+        navAnalytics: "Visual Analytics",
+        userRole: "Porcelain Edition",
+        
+        // Auth
+        authTagline: "Warm Japandi intelligence for your personal finances",
+        authSignIn: "Sign In",
+        authCreateAccount: "Create Account",
+        authFullName: "Full Name",
+        authEmail: "Email or Username",
+        authPassword: "Password",
+        authSubmitSignIn: "Sign In to BudgetIQ",
+        authSubmitCreate: "Create Your BudgetIQ Account",
+        authDemoNote: "Competition Evaluator or Quick Demo?",
+        authDemoBtn: "One-Click Instant Demo Experience",
+
+        // Metrics
+        metricNetCashflow: "Net Cashflow",
+        metricNetDesc: "Real-time ledger net balance",
+        surplus: "Surplus",
+        deficit: "Deficit",
+        neutral: "Neutral $0.00",
+        saved: "saved",
+        metricTotalIncome: "Total Income",
+        metricIncomeDesc: "Gross earned inflows",
+        metricReceived: "+ Received",
+        metricTotalOutflows: "Total Outflows",
+        metricOutflowsDesc: "Recorded expenditures",
+        ofIncome: "of income",
+        metricRecurring: "Projected Recurring",
+        metricRecurringDesc: "Normalized monthly commitments",
+        activeBills: "Active Bills",
+        dueIn7d: "Due in 7d",
+        entries: "entries",
+
+        // Due alerts
+        dueAlertsTitle: "Upcoming Due Date Alerts (Next 7 Days)",
+        billsAttention: "Bills Requiring Attention",
+        billAttention: "Bill Requiring Attention",
+        dueToday: "DUE TODAY!",
+        dueIn: "Due in",
+        days: "days",
+        day: "day",
+        overdueBy: "OVERDUE by",
+        markPaid: "Mark Paid",
+
+        // AI Assistant
+        aiTitle: "BudgetIQ Neural Advisory Engine",
+        aiSubtitle: "Serene algorithmic assessment analyzing your ledger burn rate, expense clusters, and recurring subscriptions",
+        aiBtn: "Analyze Ledger & Generate 3 AI Recommendations",
+        aiAskLabel: "Ask BudgetIQ Assistant:",
+        aiChip1: "\"Can I afford a $150 treat?\"",
+        aiChip2: "\"How do I trim subscriptions?\"",
+        aiChip3: "\"Evaluate my 50/30/20 balance\"",
+        aiChip4: "\"Find my biggest spending leak\"",
+        insightPrefix: "Insight",
+        modalAdvisorTitle: "AI Financial Advisor",
+        modalCloseBtn: "Close Insight",
+
+        // Module 1 Form
+        formRecordTitle: "Record Transaction",
+        formRecordDesc: "Log your income or expense entries into the financial ledger engine",
+        formFlow: "Transaction Flow",
+        btnExpense: "Expense (-)",
+        btnIncome: "Income (+)",
+        formTitle: "Title / Description",
+        txTitlePlaceholder: "e.g., Whole Foods Groceries, Tech Salary",
+        formAmount: "Amount ($)",
+        formDate: "Transaction Date",
+        formCategory: "Category",
+        catFood: "Food & Groceries",
+        catRent: "Rent & Housing",
+        catUtilities: "Utilities & Power",
+        catTransport: "Transport & Fuel",
+        catSalary: "Salary & Earnings",
+        catEntertainment: "Entertainment & Leisure",
+        catHealth: "Healthcare & Wellness",
+        catOther: "Other / Misc",
+        btnCommit: "Commit to Ledger",
+        btnLoadSample: "Load Sample Data",
+        btnResetLedger: "Reset Ledger",
+
+        // Module 1 Table
+        ledgerTitle: "Ledger Records",
+        ledgerDesc: "Real-time searchable transaction history",
+        btnExportCsv: "Export CSV",
+        searchPlaceholder: "Search by title, note, or date...",
+        filterAllCategories: "All Categories",
+        filterAllTypes: "All Types",
+        filterIncomeOnly: "Income Only",
+        filterExpenseOnly: "Expense Only",
+        sortNewest: "Newest First",
+        sortOldest: "Oldest First",
+        sortHighest: "Highest $",
+        sortLowest: "Lowest $",
+        thDate: "Date",
+        thTitle: "Transaction Title",
+        thCategory: "Category",
+        thType: "Type",
+        thAmount: "Amount",
+        thAction: "Action",
+        noTxTitle: "No Transactions Found",
+        noTxDesc: "Adjust your filter criteria or use the form on the left to log your first record.",
+
+        // Module 3 Form
+        subsFormTitle: "Track Recurring Bill",
+        subsFormDesc: "Log ongoing subscriptions (Netflix, Internet, Rent, etc.) with automated 7-day proximity alerts",
+        subsServiceName: "Service / Bill Name",
+        subsCost: "Cost ($)",
+        subsCadence: "Billing Cadence",
+        cadMonthly: "Monthly",
+        cadYearly: "Yearly",
+        cadWeekly: "Weekly",
+        cadQuarterly: "Quarterly",
+        subsNextDate: "Next Billing Date",
+        subsCategory: "Category",
+        subsCatEntertainment: "Entertainment",
+        subsCatUtilities: "Utilities & Telecom",
+        subsCatRent: "Housing / Rent",
+        subsCatSoftware: "Software & Cloud",
+        subsCatWellness: "Fitness & Health",
+        subsCatOther: "Other",
+        subsBtnAdd: "Add Recurring Bill",
+        subsBtnPreset: "Load Preset Bills (Netflix, Internet, Rent...)",
+        subsBtnClear: "Clear Bills",
+
+        // Module 3 Showcase
+        subsShowcaseTitle: "Active Subscriptions & Recurring Bills",
+        subsShowcaseDesc: "All continuous commitments converted to normalized monthly burn",
+        projectedLabel: "Projected:",
+        perMonth: "/ mo",
+        noSubsTitle: "No Recurring Bills Tracked",
+        noSubsDesc: "Use the form on the left or click \"Load Preset Bills\" to populate essential recurring expenses.",
+        nextBilling: "Next Billing:",
+        normalized: "Normalized:",
+        payAndLog: "Pay & Log",
+
+        // Analytics
+        chartCategoryTitle: "Spending Breakdown by Category",
+        chartCategoryDesc: "Distribution of recorded outflows across expense groups",
+        chartCashflowTitle: "Cashflow Proportions",
+        chartCashflowDesc: "Gross inflows versus total expenses and recurring commitments",
+        chartGrossInflows: "Gross Inflows",
+        chartTotalOutflows: "Total Outflows",
+        chartProjectedRecurring: "Projected Recurring"
+      },
+
+      bn: {
+        brandTagline: "ইন্টেলিজেন্ট লেজার ও সাবস্ক্রিপশন হাব",
+        navDashboard: "ড্যাশবোর্ড ও লেজার",
+        navSubscriptions: "সাবস্ক্রিপশন ও বিল",
+        navAnalytics: "ভিজ্যুয়াল অ্যানালিটিক্স",
+        userRole: "চীনামাটির সংস্করণ",
+
+        // Auth
+        authTagline: "আপনার ব্যক্তিগত অর্থের জন্য জাপান্ডি বুদ্ধিমত্তা",
+        authSignIn: "লগইন করুন",
+        authCreateAccount: "অ্যাকাউন্ট তৈরি করুন",
+        authFullName: "পুরো নাম",
+        authEmail: "ইমেইল বা ব্যবহারকারীর নাম",
+        authPassword: "পাসওয়ার্ড",
+        authSubmitSignIn: "BudgetIQ-এ প্রবেশ করুন",
+        authSubmitCreate: "নতুন অ্যাকাউন্ট তৈরি করুন",
+        authDemoNote: "বিচারক বা দ্রুত মূল্যায়নকারী?",
+        authDemoBtn: "এক-ক্লিকে তাৎক্ষণিক ডেমো অভিজ্ঞতা",
+
+        // Metrics
+        metricNetCashflow: "নেট ক্যাশফ্লো",
+        metricNetDesc: "রিয়েল-টাইম লেজার নেট ব্যালেন্স",
+        surplus: "উদ্বৃত্ত",
+        deficit: "ঘাটতি",
+        neutral: "নিরপেক্ষ $০.০০",
+        saved: "সঞ্চিত",
+        metricTotalIncome: "মোট আয়",
+        metricIncomeDesc: "অর্জিত মোট নগদ আয়",
+        metricReceived: "+ প্রাপ্ত",
+        metricTotalOutflows: "মোট ব্যয়",
+        metricOutflowsDesc: "রেকর্ডকৃত মোট খরচ",
+        ofIncome: "আয়ের",
+        metricRecurring: "প্রত্যাশিত পুনরাবৃত্ত ব্যয়",
+        metricRecurringDesc: "নিয়মিত মাসিক অঙ্গীকার",
+        activeBills: "টি সক্রিয় বিল",
+        dueIn7d: "৭ দিনে প্রদেয়",
+        entries: "টি এন্ট্রি",
+
+        // Due alerts
+        dueAlertsTitle: "আসন্ন প্রদেয় বিলের সতর্কতা (পরবর্তী ৭ দিন)",
+        billsAttention: "টি বিল অবিলম্বে প্রদেয়",
+        billAttention: "টি বিল অবিলম্বে প্রদেয়",
+        dueToday: "আজই প্রদেয়!",
+        dueIn: "প্রদেয় বাকি",
+        days: "দিন",
+        day: "দিন",
+        overdueBy: "বকেয়া মেয়াদোত্তীর্ণ",
+        markPaid: "পরিশোধ চিহ্নিত করুন",
+
+        // AI Assistant
+        aiTitle: "BudgetIQ নিউরাল পরামর্শ ইঞ্জিন",
+        aiSubtitle: "আপনার লেজারের খরচ, ব্যয়ের ধরন ও সাবস্ক্রিপশন বিশ্লেষণকারী অ্যালগরিদম",
+        aiBtn: "লেজার বিশ্লেষণ ও ৩টি AI পরামর্শ তৈরি করুন",
+        aiAskLabel: "BudgetIQ সহকারীকে জিজ্ঞাসা করুন:",
+        aiChip1: "\"আমি কি $১৫০ খরচ করতে পারি?\"",
+        aiChip2: "\"কীভাবে সাবস্ক্রিপশন কমাবো?\"",
+        aiChip3: "\"৫০/৩০/২০ ব্যালেন্স মূল্যায়ন করুন\"",
+        aiChip4: "\"আমার সবচেয়ে বড় খরচের উৎস কোনটি?\"",
+        insightPrefix: "পরামর্শ",
+        modalAdvisorTitle: "AI আর্থিক উপদেষ্টা",
+        modalCloseBtn: "পরামর্শ বন্ধ করুন",
+
+        // Module 1 Form
+        formRecordTitle: "লেনদেন রেকর্ড করুন",
+        formRecordDesc: "আর্থিক লেজার ইঞ্জিনে আপনার আয় বা ব্যয়ের তথ্য সংরক্ষণ করুন",
+        formFlow: "লেনদেনের ধরন",
+        btnExpense: "ব্যয় (-)",
+        btnIncome: "আয় (+)",
+        formTitle: "বিবরণ / শিরোনাম",
+        txTitlePlaceholder: "যেমন: কাঁচাবাজার, মাসিক বেতন",
+        formAmount: "পরিমাণ ($)",
+        formDate: "লেনদেনের তারিখ",
+        formCategory: "ক্যাটাগরি",
+        catFood: "খাবার ও মুদি",
+        catRent: "বাড়ি ভাড়া ও আবাসন",
+        catUtilities: "ইউটিলিটি ও বিদ্যুৎ",
+        catTransport: "যাতায়াত ও জ্বালানি",
+        catSalary: "বেতন ও আয়",
+        catEntertainment: "বিনোদন ও অবসর",
+        catHealth: "স্বাস্থ্যসেবা ও সুস্বাস্থ্য",
+        catOther: "অন্যান্য / বিবিধ",
+        btnCommit: "লেজারে সংরক্ষণ করুন",
+        btnLoadSample: "নমুনা তথ্য লোড করুন",
+        btnResetLedger: "লেজার রিসেট করুন",
+
+        // Module 1 Table
+        ledgerTitle: "লেজার রেকর্ডসমূহ",
+        ledgerDesc: "রিয়েল-টাইম অনুসন্ধানযোগ্য লেনদেনের ইতিহাস",
+        btnExportCsv: "CSV এক্সপোর্ট",
+        searchPlaceholder: "শিরোনাম, নোট বা তারিখ দিয়ে খুঁজুন...",
+        filterAllCategories: "সব ক্যাটাগরি",
+        filterAllTypes: "সব ধরন",
+        filterIncomeOnly: "শুধু আয়",
+        filterExpenseOnly: "শুধু ব্যয়",
+        sortNewest: "নতুনগুলো আগে",
+        sortOldest: "পুরোনোগুলো আগে",
+        sortHighest: "সর্বোচ্চ $",
+        sortLowest: "সর্বনিম্ন $",
+        thDate: "তারিখ",
+        thTitle: "লেনদেনের শিরোনাম",
+        thCategory: "ক্যাটাগরি",
+        thType: "ধরন",
+        thAmount: "পরিমাণ",
+        thAction: "অ্যাকশন",
+        noTxTitle: "কোনো লেনদেন পাওয়া যায়নি",
+        noTxDesc: "আপনার ফিল্টার পরিবর্তন করুন অথবা বাম পাশের ফর্ম ব্যবহার করে প্রথম রেকর্ডটি তৈরি করুন।",
+
+        // Module 3 Form
+        subsFormTitle: "পুনরাবৃত্ত বিল ট্র্যাক করুন",
+        subsFormDesc: "৭ দিনের স্বয়ংক্রিয় সতর্কতাসহ সাবস্ক্রিপশন (নেটফ্লিক্স, ইন্টারনেট, ভাড়া ইত্যাদি) ট্র্যাক করুন",
+        subsServiceName: "সেবা / বিলের নাম",
+        subsCost: "খরচ ($)",
+        subsCadence: "বিলের সময়কাল",
+        cadMonthly: "মাসিক",
+        cadYearly: "বার্ষিক",
+        cadWeekly: "সাপ্তাহিক",
+        cadQuarterly: "ত্রৈমাসিক",
+        subsNextDate: "পরবর্তী বিলের তারিখ",
+        subsCategory: "ক্যাটাগরি",
+        subsCatEntertainment: "বিনোদন",
+        subsCatUtilities: "ইউটিলিটি ও টেলিকম",
+        subsCatRent: "বাড়ি ভাড়া",
+        subsCatSoftware: "সফটওয়্যার ও ক্লাউড",
+        subsCatWellness: "ফিটনেস ও সুস্বাস্থ্য",
+        subsCatOther: "অন্যান্য",
+        subsBtnAdd: "পুনরাবৃত্ত বিল যোগ করুন",
+        subsBtnPreset: "প্রিসেট বিল লোড করুন (নেটফ্লিক্স, ইন্টারনেট, ভাড়া...)",
+        subsBtnClear: "বিল মুছে ফেলুন",
+
+        // Module 3 Showcase
+        subsShowcaseTitle: "সক্রিয় সাবস্ক্রিপশন ও নিয়মিত বিল",
+        subsShowcaseDesc: "নিয়মিত সমস্ত খরচের সার্বিক মাসিক হিসাব",
+        projectedLabel: "প্রত্যাশিত ব্যয়:",
+        perMonth: "/ মাস",
+        noSubsTitle: "কোনো বিল ট্র্যাক করা নেই",
+        noSubsDesc: "বাম পাশের ফর্মটি ব্যবহার করুন অথবা প্রয়োজনীয় খরচ স্বয়ংক্রিয়ভাবে পূরণ করতে \"প্রিসেট বিল লোড করুন\"-এ ক্লিক করুন।",
+        nextBilling: "পরবর্তী বিল:",
+        normalized: "মাসিক হিসাব:",
+        payAndLog: "পরিশোধ ও রেকর্ড",
+
+        // Analytics
+        chartCategoryTitle: "ক্যাটাগরি অনুযায়ী ব্যয়ের বিশ্লেষণ",
+        chartCategoryDesc: "ব্যয়ের দলসমূহের মধ্যে খরচের সুষম বণ্টন",
+        chartCashflowTitle: "ক্যাশফ্লোর অনুপাত",
+        chartCashflowDesc: "মোট আয় বনাম মোট ব্যয় এবং পুনরাবৃত্ত প্রতিশ্রুতির তুলনা",
+        chartGrossInflows: "মোট আয়",
+        chartTotalOutflows: "মোট ব্যয়",
+        chartProjectedRecurring: "প্রত্যাশিত পুনরাবৃত্ত ব্যয়"
+      }
+    };
+
+    function t(key) {
+      if (I18N[currentLang] && I18N[currentLang][key]) {
+        return I18N[currentLang][key];
+      }
+      return I18N['en'][key] || key;
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem(STORAGE_KEY_LANG, lang);
+
+      // Update button toggle states
+      const btnEn = document.getElementById('langBtnEn');
+      const btnBn = document.getElementById('langBtnBn');
+      if (btnEn && btnBn) {
+        btnEn.classList.toggle('active', lang === 'en');
+        btnBn.classList.toggle('active', lang === 'bn');
+      }
+
+      // Update all elements with data-i18n
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (I18N[lang] && I18N[lang][key]) {
+          el.textContent = I18N[lang][key];
+        }
+      });
+
+      // Update placeholders
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (I18N[lang] && I18N[lang][key]) {
+          el.placeholder = I18N[lang][key];
+        }
+      });
+
+      // Re-render UI components
+      renderAll();
+      generateAiRecommendations(false);
+
+      const toastMsg = lang === 'bn' ? 'ভাষা পরিবর্তন করা হয়েছে: বাংলা' : 'Language switched to English';
+      showToast(toastMsg, 'info');
+    }
+
+    /* Initialize today's date into date inputs */
+    function setDateInputsDefault() {
+      const today = new Date().toISOString().split('T')[0];
+      const txDateInput = document.getElementById('txDate');
+      const subDateInput = document.getElementById('subNextDate');
+      if (txDateInput && !txDateInput.value) txDateInput.value = today;
+      if (subDateInput && !subDateInput.value) {
+        const nextDate = new Date();
+        nextDate.setDate(nextDate.getDate() + 4);
+        subDateInput.value = nextDate.toISOString().split('T')[0];
+      }
+    }
+
+    /* ==========================================================================
+       3. AUTHENTICATION ENGINE (Session State & Persistence)
+       ========================================================================== */
+    let authMode = 'login'; // 'login' or 'signup'
+
+    function switchAuthTab(mode) {
+      authMode = mode;
+      const tabLogin = document.getElementById('authTabLogin');
+      const tabSignup = document.getElementById('authTabSignup');
+      const nameGroup = document.getElementById('nameInputGroup');
+      const submitBtn = document.getElementById('authSubmitBtn');
+
+      if (mode === 'login') {
+        tabLogin.classList.add('active');
+        tabSignup.classList.remove('active');
+        nameGroup.style.display = 'none';
+        submitBtn.innerHTML = `<span>${t('authSubmitSignIn')}</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>`;
+      } else {
+        tabSignup.classList.add('active');
+        tabLogin.classList.remove('active');
+        nameGroup.style.display = 'flex';
+        submitBtn.innerHTML = `<span>${t('authSubmitCreate')}</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>`;
+      }
+    }
+
+    function getUsers() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_USERS);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim().toLowerCase();
+      const password = document.getElementById('authPassword').value;
+      const name = document.getElementById('authFullName').value.trim() || 'Valued User';
+
+      const users = getUsers();
+
+      if (authMode === 'signup') {
+        if (users.some(u => u.email === email)) {
+          showToast(currentLang === 'bn' ? 'এই ইমেইলের অ্যাকাউন্ট ইতিমধ্যে বিদ্যমান।' : 'Account with this email already exists.', 'error');
+          return;
+        }
+        const newUser = {
+          id: 'user_' + Date.now(),
+          email,
+          password,
+          name
+        };
+        users.push(newUser);
+        saveUsers(users);
+        loginUser(newUser, true);
+        showToast(currentLang === 'bn' ? `BudgetIQ-তে স্বাগতম, ${name}!` : `Welcome to BudgetIQ, ${name}!`, 'success');
+      } else {
+        const match = users.find(u => u.email === email && u.password === password);
+        if (!match) {
+          showToast(currentLang === 'bn' ? 'ভুল তথ্য। আবার চেষ্টা করুন।' : 'Invalid credentials. Check your details.', 'error');
+          return;
+        }
+        loginUser(match, false);
+        showToast(currentLang === 'bn' ? `স্বাগতম, ${match.name}!` : `Welcome back, ${match.name}!`, 'success');
+      }
+    }
+
+    function loginDemoUser() {
+      let users = getUsers();
+      let demoUser = users.find(u => u.email === 'alex.morgan@budgetiq.io');
+      if (!demoUser) {
+        demoUser = {
+          id: 'user_demo_101',
+          email: 'alex.morgan@budgetiq.io',
+          password: 'password123',
+          name: 'Alex Morgan'
+        };
+        users.push(demoUser);
+        saveUsers(users);
+      }
+      loginUser(demoUser, false);
+      showToast(currentLang === 'bn' ? 'অ্যালেক্স মর্গান হিসেবে লগইন সম্পন্ন' : 'Signed in as Alex Morgan (Porcelain Demo)', 'info');
+
+      if (transactions.length === 0 && subscriptions.length === 0) {
+        seedSampleLedgerData(false);
+        seedSampleSubscriptions(false);
+      }
+    }
+
+    function loginUser(user, isNew = false) {
+      currentUser = user;
+      localStorage.setItem(STORAGE_KEY_SESSION, JSON.stringify(user));
+
+      // Update UI Header
+      document.getElementById('userNameDisplay').textContent = user.name;
+      const initials = user.name.split(' ').map(n => n[0]).join('').substring(0, 2) || 'IQ';
+      document.getElementById('userAvatar').textContent = initials.toUpperCase();
+
+      // Hide auth overlay
+      document.getElementById('authOverlay').classList.add('hidden');
+
+      // Load user data
+      loadUserData();
+      renderAll();
+
+      generateAiRecommendations(false);
+    }
+
+    function handleLogout() {
+      localStorage.removeItem(STORAGE_KEY_SESSION);
+      currentUser = null;
+      document.getElementById('authOverlay').classList.remove('hidden');
+      document.getElementById('authEmail').value = '';
+      document.getElementById('authPassword').value = '';
+      showToast(currentLang === 'bn' ? 'লগআউট সম্পন্ন হয়েছে।' : 'Logged out successfully.', 'info');
+    }
+
+    function checkExistingSession() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_SESSION);
+        if (raw) {
+          const user = JSON.parse(raw);
+          if (user && user.id) {
+            loginUser(user, false);
+            return;
+          }
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      document.getElementById('authOverlay').classList.remove('hidden');
+    }
+
+    /* ==========================================================================
+       4. USER FINANCIAL DATA STORE (Per-User Persistence)
+       ========================================================================== */
+    function getUserStorageKey() {
+      return STORAGE_KEY_PREFIX + (currentUser ? currentUser.id : 'guest');
+    }
+
+    function loadUserData() {
+      const key = getUserStorageKey();
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const data = JSON.parse(raw);
+          transactions = Array.isArray(data.transactions) ? data.transactions : [];
+          subscriptions = Array.isArray(data.subscriptions) ? data.subscriptions : [];
+        } else {
+          transactions = [];
+          subscriptions = [];
+        }
+      } catch (e) {
+        transactions = [];
+        subscriptions = [];
+      }
+    }
+
+    function saveUserData() {
+      const key = getUserStorageKey();
+      const payload = {
+        transactions,
+        subscriptions,
+        updatedAt: new Date().toISOString()
+      };
+      localStorage.setItem(key, JSON.stringify(payload));
+    }
+
+    /* ==========================================================================
+       5. MODULE 1 - EXPENSE & INCOME LEDGER ENGINE
+       ========================================================================== */
+    function setTransactionType(type) {
+      currentTransactionType = type;
+      const btnExpense = document.getElementById('btnTypeExpense');
+      const btnIncome = document.getElementById('btnTypeIncome');
+      const categorySelect = document.getElementById('txCategory');
+
+      if (type === 'income') {
+        btnIncome.className = 'type-toggle-btn active-income';
+        btnExpense.className = 'type-toggle-btn';
+        if (categorySelect.value !== 'Salary') {
+          categorySelect.value = 'Salary';
+        }
+      } else {
+        btnExpense.className = 'type-toggle-btn active-expense';
+        btnIncome.className = 'type-toggle-btn';
+        if (categorySelect.value === 'Salary') {
+          categorySelect.value = 'Food';
+        }
+      }
+    }
+
+    function handleTransactionSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById('txTitle').value.trim();
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      const date = document.getElementById('txDate').value;
+      const category = document.getElementById('txCategory').value;
+
+      if (!title || isNaN(amount) || amount <= 0 || !date) {
+        showToast(currentLang === 'bn' ? 'সঠিক তথ্য প্রদান করুন।' : 'Please provide valid transaction details.', 'error');
+        return;
+      }
+
+      const newTx = {
+        id: 'tx_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+        title,
+        amount,
+        date,
+        category,
+        type: currentTransactionType,
+        createdAt: new Date().toISOString()
+      };
+
+      transactions.unshift(newTx);
+      saveUserData();
+
+      // Reset form
+      document.getElementById('txTitle').value = '';
+      document.getElementById('txAmount').value = '';
+      setDateInputsDefault();
+
+      renderAll();
+      showToast(currentLang === 'bn' ? `"${title}" ($${amount.toFixed(2)}) লেজারে যুক্ত হয়েছে` : `Logged "${title}" ($${amount.toFixed(2)}) to ledger`, 'success');
+      generateAiRecommendations(false);
+    }
+
+    function deleteTransaction(txId) {
+      const idx = transactions.findIndex(t => t.id === txId);
+      if (idx !== -1) {
+        const removed = transactions[idx];
+        transactions.splice(idx, 1);
+        saveUserData();
+        renderAll();
+        showToast(currentLang === 'bn' ? `"${removed.title}" মুছে ফেলা হয়েছে` : `Deleted "${removed.title}"`, 'info');
+        generateAiRecommendations(false);
+      }
+    }
+
+    function confirmClearTransactions() {
+      const confirmMsg = currentLang === 'bn' ? 'আপনি কি সমস্ত লেনদেন মুছে ফেলতে চান?' : 'Are you sure you want to clear all ledger transactions?';
+      if (confirm(confirmMsg)) {
+        transactions = [];
+        saveUserData();
+        renderAll();
+        showToast(currentLang === 'bn' ? 'লেজার রিসেট সম্পন্ন।' : 'Ledger cleared.', 'info');
+        generateAiRecommendations(false);
+      }
+    }
+
+    /* Browsable Table: Filter & Search */
+    let currentSearchTerm = '';
+
+    function handleLedgerSearch() {
+      currentSearchTerm = document.getElementById('txSearchInput').value.trim().toLowerCase();
+      renderLedgerTable();
+    }
+
+    function applyLedgerFilters() {
+      renderLedgerTable();
+    }
+
+    function getFilteredTransactions() {
+      const categoryFilter = document.getElementById('filterCategory').value;
+      const typeFilter = document.getElementById('filterType').value;
+      const sortOption = document.getElementById('filterSort').value;
+
+      return transactions.filter(tx => {
+        if (currentSearchTerm) {
+          const matchTitle = tx.title.toLowerCase().includes(currentSearchTerm);
+          const matchCategory = tx.category.toLowerCase().includes(currentSearchTerm);
+          const matchDate = tx.date.includes(currentSearchTerm);
+          if (!matchTitle && !matchCategory && !matchDate) return false;
+        }
+
+        if (categoryFilter !== 'ALL' && tx.category !== categoryFilter) {
+          return false;
+        }
+
+        if (typeFilter !== 'ALL' && tx.type !== typeFilter) {
+          return false;
+        }
+
+        return true;
+      }).sort((a, b) => {
+        if (sortOption === 'date-desc') return new Date(b.date) - new Date(a.date);
+        if (sortOption === 'date-asc') return new Date(a.date) - new Date(b.date);
+        if (sortOption === 'amount-desc') return b.amount - a.amount;
+        if (sortOption === 'amount-asc') return a.amount - b.amount;
+        return 0;
+      });
+    }
+
+    function renderLedgerTable() {
+      const tbody = document.getElementById('ledgerTableBody');
+      const emptyState = document.getElementById('ledgerEmptyState');
+      const filtered = getFilteredTransactions();
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'flex';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      tbody.innerHTML = filtered.map(tx => {
+        const isIncome = tx.type === 'income';
+        const sign = isIncome ? '+' : '-';
+        const amountClass = isIncome ? 'amount-income' : 'amount-expense';
+        const catClass = getCategoryBadgeClass(tx.category);
+        const catName = getLocalizedCategoryName(tx.category);
+        const typeName = isIncome ? (currentLang === 'bn' ? 'আয়' : 'income') : (currentLang === 'bn' ? 'ব্যয়' : 'expense');
+
+        return `
+          <tr>
+            <td style="color: var(--text-muted); font-size: 0.82rem;" class="mono-num">${formatDisplayDate(tx.date)}</td>
+            <td>
+              <div style="font-weight: 600; color: var(--text-primary);">${escapeHtml(tx.title)}</div>
+            </td>
+            <td>
+              <span class="category-badge ${catClass}">
+                ${getCategoryIcon(tx.category)}
+                ${escapeHtml(catName)}
+              </span>
+            </td>
+            <td>
+              <span style="font-size: 0.76rem; font-weight: 700; text-transform: uppercase; color: ${isIncome ? 'var(--color-success)' : 'var(--color-danger)'};">
+                ${typeName}
+              </span>
+            </td>
+            <td style="text-align: right;" class="mono-num ${amountClass}">
+              ${sign}$${tx.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </td>
+            <td style="text-align: center;">
+              <button class="btn-danger-ghost" title="Delete record" onclick="deleteTransaction('${tx.id}')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function getLocalizedCategoryName(category) {
+      if (currentLang === 'bn') {
+        switch (category.toLowerCase()) {
+          case 'food': return 'খাবার';
+          case 'rent': return 'বাড়ি ভাড়া';
+          case 'utilities': return 'ইউটিলিটি';
+          case 'transport': return 'যাতায়াত';
+          case 'salary': return 'বেতন';
+          case 'entertainment': return 'বিনোদন';
+          case 'health': return 'স্বাস্থ্যসেবা';
+          default: return 'অন্যান্য';
+        }
+      }
+      return category;
+    }
+
+    function getCategoryBadgeClass(category) {
+      switch (category.toLowerCase()) {
+        case 'food': return 'cat-food';
+        case 'rent': return 'cat-rent';
+        case 'utilities': return 'cat-utilities';
+        case 'transport': return 'cat-transport';
+        case 'salary': return 'cat-salary';
+        case 'entertainment': return 'cat-entertainment';
+        default: return 'cat-other';
+      }
+    }
+
+    function getCategoryIcon(cat) {
+      switch (cat.toLowerCase()) {
+        case 'food': return '🥐';
+        case 'rent': return '🏠';
+        case 'utilities': return '🕯️';
+        case 'transport': return '🚲';
+        case 'salary': return '💼';
+        case 'entertainment': return '🍵';
+        case 'health': return '🌿';
+        default: return '🌸';
+      }
+    }
+
+    /* Summary cards math calculation */
+    function calculateLedgerMetrics() {
+      let totalIncome = 0;
+      let totalExpenses = 0;
+      let incomeCount = 0;
+      let expenseCount = 0;
+
+      transactions.forEach(t => {
+        if (t.type === 'income') {
+          totalIncome += t.amount;
+          incomeCount++;
+        } else {
+          totalExpenses += t.amount;
+          expenseCount++;
+        }
+      });
+
+      const netBalance = totalIncome - totalExpenses;
+      const savingsRate = totalIncome > 0 ? ((netBalance / totalIncome) * 100) : 0;
+      const expenseRatio = totalIncome > 0 ? ((totalExpenses / totalIncome) * 100) : 0;
+
+      // Update Card 1: Net Balance
+      const netElem = document.getElementById('metricNetBalance');
+      netElem.textContent = `${netBalance >= 0 ? '' : '-'}$${Math.abs(netBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      netElem.style.color = netBalance >= 0 ? 'var(--accent-lavender-dark)' : 'var(--color-danger)';
+
+      const statusBadge = document.getElementById('metricBalanceStatus');
+      const statusText = document.getElementById('metricBalanceStatusText');
+      if (netBalance > 0) {
+        statusBadge.className = 'trend-pill positive';
+        statusText.textContent = t('surplus');
+      } else if (netBalance === 0) {
+        statusBadge.className = 'trend-pill neutral';
+        statusText.textContent = t('neutral');
+      } else {
+        statusBadge.className = 'trend-pill negative';
+        statusText.textContent = t('deficit');
+      }
+
+      document.getElementById('metricSavingsRate').textContent = `${Math.max(0, savingsRate).toFixed(1)}% ${t('saved')}`;
+
+      // Update Card 2: Income
+      document.getElementById('metricTotalIncome').textContent = `$${totalIncome.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('metricIncomeCount').textContent = `${incomeCount} ${t('entries')}`;
+
+      // Update Card 3: Expenses
+      document.getElementById('metricTotalExpenses').textContent = `$${totalExpenses.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('metricExpenseCount').textContent = `${expenseCount} ${t('entries')}`;
+      document.getElementById('metricExpenseRatio').textContent = `${expenseRatio.toFixed(1)}% ${t('ofIncome')}`;
+    }
+
+    /* ==========================================================================
+       6. MODULE 3 - SUBSCRIPTION & RECURRING BILL MANAGER
+       ========================================================================== */
+    function handleSubscriptionSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('subName').value.trim();
+      const amount = parseFloat(document.getElementById('subAmount').value);
+      const frequency = document.getElementById('subFrequency').value;
+      const nextDate = document.getElementById('subNextDate').value;
+      const category = document.getElementById('subCategory').value;
+
+      if (!name || isNaN(amount) || amount <= 0 || !nextDate) {
+        showToast(currentLang === 'bn' ? 'সঠিক বিলের তথ্য প্রদান করুন।' : 'Please provide valid recurring bill information.', 'error');
+        return;
+      }
+
+      const newSub = {
+        id: 'sub_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+        name,
+        amount,
+        frequency,
+        nextDate,
+        category,
+        createdAt: new Date().toISOString()
+      };
+
+      subscriptions.unshift(newSub);
+      saveUserData();
+
+      // Reset
+      document.getElementById('subName').value = '';
+      document.getElementById('subAmount').value = '';
+      setDateInputsDefault();
+
+      renderAll();
+      showToast(currentLang === 'bn' ? `"${name}" বিলটি যুক্ত হয়েছে!` : `Recurring bill "${name}" registered!`, 'success');
+      generateAiRecommendations(false);
+    }
+
+    function deleteSubscription(subId) {
+      const idx = subscriptions.findIndex(s => s.id === subId);
+      if (idx !== -1) {
+        const removed = subscriptions[idx];
+        subscriptions.splice(idx, 1);
+        saveUserData();
+        renderAll();
+        showToast(currentLang === 'bn' ? `"${removed.name}" মুছে ফেলা হয়েছে` : `Removed subscription "${removed.name}"`, 'info');
+        generateAiRecommendations(false);
+      }
+    }
+
+    function confirmClearSubscriptions() {
+      const confirmMsg = currentLang === 'bn' ? 'সমস্ত পুনরাবৃত্ত বিল মুছে ফেলতে চান?' : 'Clear all recurring bills?';
+      if (confirm(confirmMsg)) {
+        subscriptions = [];
+        saveUserData();
+        renderAll();
+        showToast(currentLang === 'bn' ? 'বিলসমূহ মুছে ফেলা হয়েছে।' : 'Subscriptions cleared.', 'info');
+        generateAiRecommendations(false);
+      }
+    }
+
+    function getNormalizedMonthlyCost(amount, frequency) {
+      switch (frequency.toLowerCase()) {
+        case 'monthly': return amount;
+        case 'yearly': return amount / 12;
+        case 'weekly': return amount * (52 / 12);
+        case 'quarterly': return amount / 3;
+        default: return amount;
+      }
+    }
+
+    function getDaysUntil(dateString) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const target = new Date(dateString + 'T00:00:00');
+      const diffTime = target - today;
+      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    }
+
+    function markBillPaid(subId) {
+      const sub = subscriptions.find(s => s.id === subId);
+      if (!sub) return;
+
+      const today = new Date().toISOString().split('T')[0];
+      const newTx = {
+        id: 'tx_bill_' + Date.now(),
+        title: `${currentLang === 'bn' ? 'নিয়মিত বিল: ' : 'Recurring: '}${sub.name}`,
+        amount: sub.amount,
+        date: today,
+        category: sub.category === 'Software' ? 'Utilities' : sub.category,
+        type: 'expense',
+        createdAt: new Date().toISOString()
+      };
+      transactions.unshift(newTx);
+
+      const curr = new Date(sub.nextDate + 'T00:00:00');
+      if (sub.frequency === 'monthly') curr.setMonth(curr.getMonth() + 1);
+      else if (sub.frequency === 'yearly') curr.setFullYear(curr.getFullYear() + 1);
+      else if (sub.frequency === 'weekly') curr.setDate(curr.getDate() + 7);
+      else if (sub.frequency === 'quarterly') curr.setMonth(curr.getMonth() + 3);
+
+      sub.nextDate = curr.toISOString().split('T')[0];
+
+      saveUserData();
+      renderAll();
+      showToast(currentLang === 'bn' ? `${sub.name}-এর $${sub.amount.toFixed(2)} পরিশোধ ও লেজারে রেকর্ড করা হয়েছে!` : `Paid $${sub.amount.toFixed(2)} for ${sub.name} & logged to ledger!`, 'success');
+      generateAiRecommendations(false);
+    }
+
+    /* Render Subscriptions cards & 7-Day Visual Alerts with Pastel Rose Highlight */
+    function renderSubscriptions() {
+      const container = document.getElementById('subsCardsContainer');
+      const emptyState = document.getElementById('subsEmptyState');
+      const alertSection = document.getElementById('dueAlertsSection');
+      const alertContainer = document.getElementById('dueAlertsContainer');
+      const alertBadge = document.getElementById('dueAlertCountBadge');
+
+      let totalMonthlyProjected = 0;
+      let billsDueNext7Days = [];
+
+      subscriptions.forEach(sub => {
+        totalMonthlyProjected += getNormalizedMonthlyCost(sub.amount, sub.frequency);
+        const days = getDaysUntil(sub.nextDate);
+        if (days >= 0 && days <= 7) {
+          billsDueNext7Days.push({ ...sub, daysUntil: days });
+        } else if (days < 0) {
+          billsDueNext7Days.push({ ...sub, daysUntil: days, isOverdue: true });
+        }
+      });
+
+      // Update metric cards
+      document.getElementById('metricMonthlySubs').textContent = `$${totalMonthlyProjected.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      document.getElementById('metricSubsCount').textContent = `${subscriptions.length} ${t('activeBills')}`;
+      document.getElementById('subTotalProjectedDisplay').textContent = `${t('projectedLabel')} $${totalMonthlyProjected.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${t('perMonth')}`;
+
+      const duePill = document.getElementById('metricSubsDueSoon');
+      duePill.textContent = `${billsDueNext7Days.length} ${t('dueIn7d')}`;
+      if (billsDueNext7Days.length > 0) {
+        duePill.className = 'trend-pill negative';
+      } else {
+        duePill.className = 'trend-pill neutral';
+      }
+
+      // Render 7-day Alert Banner Cards (Pastel Rose / Pink Tint Highlight)
+      if (billsDueNext7Days.length > 0) {
+        alertSection.style.display = 'flex';
+        const alertWord = billsDueNext7Days.length > 1 ? t('billsAttention') : t('billAttention');
+        alertBadge.textContent = `${billsDueNext7Days.length} ${alertWord}`;
+        
+        alertContainer.innerHTML = billsDueNext7Days.map(b => {
+          let tagClass = 'soon';
+          let tagText = `${t('dueIn')} ${b.daysUntil} ${b.daysUntil === 1 ? t('day') : t('days')}`;
+          if (b.daysUntil === 0) {
+            tagClass = 'today';
+            tagText = t('dueToday');
+          } else if (b.isOverdue) {
+            tagClass = 'today';
+            tagText = `${t('overdueBy')} ${Math.abs(b.daysUntil)}${t('day')}`;
+          }
+
+          return `
+            <div class="due-bill-card ${b.daysUntil <= 2 ? 'urgent' : ''}">
+              <div class="due-bill-info">
+                <h4>${escapeHtml(b.name)}</h4>
+                <div class="due-bill-meta">
+                  <span class="due-tag ${tagClass}">${tagText}</span>
+                  <span>${formatDisplayDate(b.nextDate)}</span>
+                </div>
+              </div>
+              <div class="due-bill-actions">
+                <span class="due-amount mono-num">$${b.amount.toFixed(2)}</span>
+                <button class="btn btn-secondary btn-sm" onclick="markBillPaid('${b.id}')" title="Log expense and advance cycle">
+                  ${t('markPaid')}
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        alertSection.style.display = 'none';
+      }
+
+      // Render Subscriptions Grid
+      if (subscriptions.length === 0) {
+        container.innerHTML = '';
+        emptyState.style.display = 'flex';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      container.innerHTML = subscriptions.map(sub => {
+        const days = getDaysUntil(sub.nextDate);
+        const normalizedMonthly = getNormalizedMonthlyCost(sub.amount, sub.frequency);
+        let dueClass = 'color: var(--text-muted);';
+        let dueLabel = `${t('dueIn')} ${days} ${t('days')}`;
+
+        if (days < 0) {
+          dueClass = 'color: var(--color-danger); font-weight: 700;';
+          dueLabel = `${t('overdueBy')} (${Math.abs(days)}${t('day')})`;
+        } else if (days === 0) {
+          dueClass = 'color: var(--color-danger); font-weight: 700;';
+          dueLabel = t('dueToday');
+        } else if (days <= 7) {
+          dueClass = 'color: #9B2C42; font-weight: 700;';
+          dueLabel = `${t('dueIn')} ${days} ${t('days')} (Soon)`;
+        }
+
+        const localizedFreq = currentLang === 'bn' ? 
+          (sub.frequency === 'monthly' ? 'মাসিক' : sub.frequency === 'yearly' ? 'বার্ষিক' : sub.frequency === 'weekly' ? 'সাপ্তাহিক' : 'ত্রৈমাসিক') : sub.frequency;
+
+        return `
+          <div class="sub-card">
+            <div class="sub-card-top">
+              <div class="sub-logo-title">
+                <div class="sub-icon">
+                  ${escapeHtml(sub.name.charAt(0).toUpperCase())}
+                </div>
+                <div class="sub-meta">
+                  <h4>${escapeHtml(sub.name)}</h4>
+                  <span class="sub-freq-pill">${localizedFreq}</span>
+                </div>
+              </div>
+              <button class="btn-danger-ghost" title="Delete subscription" onclick="deleteSubscription('${sub.id}')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              </button>
+            </div>
+
+            <div class="sub-pricing">
+              <span class="sub-price-val mono-num">$${sub.amount.toFixed(2)}</span>
+              <span class="sub-period">/ ${sub.frequency === 'monthly' ? (currentLang === 'bn' ? 'মাস' : 'mo') : localizedFreq}</span>
+            </div>
+
+            <div class="sub-details-row">
+              <span style="color: var(--text-muted); font-size: 0.78rem;">${t('nextBilling')}</span>
+              <span style="${dueClass}">${dueLabel} (${formatDisplayDate(sub.nextDate)})</span>
+            </div>
+
+            <div class="sub-card-footer">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">
+                ${t('normalized')} <strong class="mono-num" style="color: var(--accent-lavender-dark);">$${normalizedMonthly.toFixed(2)}${t('perMonth')}</strong>
+              </span>
+              <button class="btn btn-secondary btn-sm" onclick="markBillPaid('${sub.id}')">
+                ${t('payAndLog')}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function scrollToDueAlerts() {
+      const sec = document.getElementById('dueAlertsSection');
+      if (sec && sec.style.display !== 'none') {
+        sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        showToast(currentLang === 'bn' ? 'পরবর্তী ৭ দিনে কোনো প্রদেয় বিল নেই!' : 'No bills due within the next 7 days!', 'info');
+      }
+    }
+
+    /* ==========================================================================
+       7. AI FINANCIAL ASSISTANT PANEL (3 Natural-Language Budget Recommendations)
+       ========================================================================== */
+    function generateAiRecommendations(userClicked = false) {
+      const container = document.getElementById('aiRecommendationsContainer');
+
+      let totalIncome = 0;
+      let totalExpenses = 0;
+      const expenseByCategory = {};
+
+      transactions.forEach(t => {
+        if (t.type === 'income') {
+          totalIncome += t.amount;
+        } else {
+          totalExpenses += t.amount;
+          expenseByCategory[t.category] = (expenseByCategory[t.category] || 0) + t.amount;
+        }
+      });
+
+      let totalMonthlySubscriptions = 0;
+      subscriptions.forEach(s => {
+        totalMonthlySubscriptions += getNormalizedMonthlyCost(s.amount, s.frequency);
+      });
+
+      const netBalance = totalIncome - totalExpenses;
+      const savingsRate = totalIncome > 0 ? ((netBalance / totalIncome) * 100) : 0;
+      const subRatio = totalIncome > 0 ? ((totalMonthlySubscriptions / totalIncome) * 100) : 0;
+
+      let topCategory = 'None';
+      let topCategoryAmount = 0;
+      for (const cat in expenseByCategory) {
+        if (expenseByCategory[cat] > topCategoryAmount) {
+          topCategoryAmount = expenseByCategory[cat];
+          topCategory = cat;
+        }
+      }
+      const topCatPercent = totalExpenses > 0 ? ((topCategoryAmount / totalExpenses) * 100) : 0;
+      const topCatLocalized = getLocalizedCategoryName(topCategory);
+
+      const recommendations = [];
+
+      // RECOMMENDATION 1
+      if (transactions.length === 0) {
+        recommendations.push({
+          badge: 'badge-urgent',
+          badgeText: currentLang === 'bn' ? 'প্রস্তুতি প্রয়োজন' : 'Setup Required',
+          headline: currentLang === 'bn' ? 'আপনার মূল আয় ও নির্দিষ্ট খরচসমূহ যুক্ত করুন' : 'Initialize Your Baseline Income & Fixed Outflows',
+          body: currentLang === 'bn' ? 'বিশ্লেষণ সক্রিয় করার জন্য লেনদেনের রেকর্ড প্রয়োজন। আপনার মাসিক বেতন ও প্রাথমিক খরচ যোগ করুন।' : 'BudgetIQ requires logged transactions to unlock deep algorithmic intelligence. Start by recording your primary salary and essential fixed costs.',
+          actionCue: currentLang === 'bn' ? '💡 পরামর্শ: একটি পূর্ণাঙ্গ ডেমো দেখতে "নমুনা তথ্য লোড করুন"-এ ক্লিক করুন।' : '💡 Tip: Click "Load Sample Data" to preview an organic Japandi financial scenario.'
+        });
+      } else if (netBalance < 0) {
+        recommendations.push({
+          badge: 'badge-urgent',
+          badgeText: currentLang === 'bn' ? 'ঘাটতি সতর্কতা' : 'Deficit Alert',
+          headline: currentLang === 'bn' ? `নেগেটিভ ক্যাশফ্লো সতর্কতা: অতিরিক্ত ব্যয় $${Math.abs(netBalance).toFixed(2)}` : `Negative Cash Flow Warning: Overspending by $${Math.abs(netBalance).toFixed(2)}`,
+          body: currentLang === 'bn' ? 'আপনার মোট ব্যয় এই মেয়াদে আয় অতিক্রম করেছে। অতিরিক্ত কেনাকাটা অবিলম্বে স্থগিত রাখার পরামর্শ দেওয়া হচ্ছে।' : `Your total outflows exceed your income this period. At this burn rate, liquidity is under pressure. We recommend pausing discretionary purchases immediately and instituting a zero-based budget.`,
+          actionCue: currentLang === 'bn' ? '⚡ পদক্ষেপ: অতিরিক্ত খরচ কমিয়ে নগদ তহবিল পুনঃরুদ্ধার করুন।' : '⚡ Action: Trim variable expenses to restore serene cash reserves.'
+        });
+      } else if (savingsRate < 20) {
+        const targetSavings = totalIncome * 0.20;
+        const gap = targetSavings - netBalance;
+        recommendations.push({
+          badge: 'badge-opt',
+          badgeText: currentLang === 'bn' ? '৫০/৩০/২০ অপ্টিমাইজেশন' : '50/30/20 Optimization',
+          headline: currentLang === 'bn' ? '২০% সঞ্চয় লক্ষ্যমাত্রায় পৌঁছাতে সঞ্চয় বৃদ্ধি করুন' : `Boost Savings to Meet the 20% Financial Freedom Target`,
+          body: currentLang === 'bn' ? `আপনি বর্তমানে আয়ের ${savingsRate.toFixed(1)}% ($${netBalance.toFixed(2)}) সঞ্চয় করছেন। ২০% লক্ষ্যমাত্রায় ($${targetSavings.toFixed(2)}) পৌঁছাতে অতিরিক্ত $${gap.toFixed(2)} সঞ্চয় তহবিলে স্থানান্তর করুন।` : `You are currently saving ${savingsRate.toFixed(1)}% of your income ($${netBalance.toFixed(2)}). To reach the golden 20% threshold ($${targetSavings.toFixed(2)}), aim to redirect $${gap.toFixed(2)} from non-essential spending into high-yield reserves.`,
+          actionCue: currentLang === 'bn' ? `📈 সুযোগ: প্রতি সপ্তাহে $${(gap / 4).toFixed(0)} অটোমেটিক সঞ্চয় স্থানান্তর করুন।` : `📈 Potential: Automate $${(gap / 4).toFixed(0)} weekly transfers to your savings vault.`
+        });
+      } else {
+        recommendations.push({
+          badge: 'badge-grow',
+          badgeText: currentLang === 'bn' ? 'সম্পদ বৃদ্ধি' : 'Wealth Velocity',
+          headline: currentLang === 'bn' ? `অনবদ্য সঞ্চয় হার: ${savingsRate.toFixed(1)}% সঞ্চিত` : `Exceptional Savings Velocity: ${savingsRate.toFixed(1)}% Retained`,
+          body: currentLang === 'bn' ? `অভিনন্দন! $${netBalance.toFixed(2)} (${savingsRate.toFixed(1)}% আয়) ধরে রাখা সর্বোচ্চ পর্যায়ের আর্থিক সুশৃঙ্খলতা প্রদর্শন করে।` : `Congratulations! Retaining $${netBalance.toFixed(2)} (${savingsRate.toFixed(1)}% of income) places you in the top tier of financial discipline. Consider laddering surplus capital into index funds or short-term treasury yields.`,
+          actionCue: currentLang === 'bn' ? '🛡️ মাইলফলক: আপনার জরুরি তহবিল প্রতি প্রান্তিকে ১ মাস সম্প্রসারিত হচ্ছে।' : '🛡️ Milestone: Your emergency fund runway expands by 1 month every quarter.'
+        });
+      }
+
+      // RECOMMENDATION 2
+      if (topCategory !== 'None' && topCategoryAmount > 0) {
+        const potentialSavings = topCategoryAmount * 0.15;
+        recommendations.push({
+          badge: 'badge-opt',
+          badgeText: currentLang === 'bn' ? 'সর্বোচ্চ ব্যয়' : 'Highest Outflow',
+          headline: currentLang === 'bn' ? `${topCatLocalized} অপ্টিমাইজ করুন: মোট ব্যয়ের ${topCatPercent.toFixed(0)}% ($${topCategoryAmount.toFixed(2)})` : `Optimize ${topCategory}: Accounts for ${topCatPercent.toFixed(0)}% of Outflows ($${topCategoryAmount.toFixed(2)})`,
+          body: currentLang === 'bn' ? `${topCatLocalized} আপনার সবচেয়ে বড় খরচের ক্ষেত্র। মাত্র ১৫% হ্রাস করলে প্রতি মাসে $${potentialSavings.toFixed(2)} (বছরে $${(potentialSavings * 12).toFixed(2)}) সাশ্রয় হবে।` : `${topCategory} represents your heaviest spending cluster. Trimming just 15% through mindful substitutions or bulk purchasing will recapture $${potentialSavings.toFixed(2)} every month ($${(potentialSavings * 12).toFixed(2)} annually).`,
+          actionCue: currentLang === 'bn' ? `🎯 লক্ষ্য: আগামী সপ্তাহে ${topCatLocalized} খরচ $${(topCategoryAmount * 0.2).toFixed(0)}-এ সীমিত রাখুন।` : `🎯 Target: Cap next week's ${topCategory} expenditure to $${(topCategoryAmount * 0.2).toFixed(0)}.`
+        });
+      } else {
+        recommendations.push({
+          badge: 'badge-opt',
+          badgeText: currentLang === 'bn' ? 'ক্যাটাগরি ট্র্যাকিং' : 'Category Tracking',
+          headline: currentLang === 'bn' ? 'খরচের ফাঁক খুঁজে পেতে ক্যাটাগরি নির্ধারণ করুন' : 'Categorize Outflows to Pinpoint Spending Leaks',
+          body: currentLang === 'bn' ? 'খাবার, ভাড়া, ইউটিলিটি ও যাতায়াতের খরচ পৃথক করলে বাজেট অসঙ্গতি তাৎক্ষণিকভাবে চিহ্নিত করা সম্ভব হয়।' : 'Subdividing your expenses across Food, Rent, Utilities, and Transport allows BudgetIQ to run automated anomaly detection on lifestyle inflation.',
+          actionCue: currentLang === 'bn' ? '🔍 অনুসন্ধান: প্যাটার্ন শনাক্ত করতে বিভিন্ন ক্যাটাগরির তথ্য রেকর্ড করুন।' : '🔍 Log diverse categories to activate pattern recognition.'
+        });
+      }
+
+      // RECOMMENDATION 3
+      if (subscriptions.length > 0) {
+        if (subRatio > 15) {
+          recommendations.push({
+            badge: 'badge-sub',
+            badgeText: currentLang === 'bn' ? 'সাবস্ক্রিপশন বোঝা' : 'Subscription Drag',
+            headline: currentLang === 'bn' ? `অতিরিক্ত নিয়মিত খরচ: সাবস্ক্রিপশনে আয়ের ${subRatio.toFixed(1)}% ব্যয় হচ্ছে` : `Heavy Recurring Overhead: Subscriptions Consume ${subRatio.toFixed(1)}% of Income`,
+            body: currentLang === 'bn' ? `আপনি ${subscriptions.length}টি সক্রিয় সার্ভিসে প্রতি মাসে $${totalMonthlySubscriptions.toFixed(2)} ব্যয় করছেন। ১০% অতিক্রম করলে অব্যবহৃত সার্ভিসগুলো অডিট করে বাদ দেওয়ার পরামর্শ দেওয়া হয়।` : `You are spending $${totalMonthlySubscriptions.toFixed(2)}/month across ${subscriptions.length} recurring services. A recurring burden exceeding 10% can silently erode savings. Conduct an audit and cancel dormant entertainment or software tiers.`,
+            actionCue: currentLang === 'bn' ? '✂️ সুপারিশ: এই সপ্তাহে অপ্রয়োজনীয় ১-২টি ডিজিটাল সাবস্ক্রিপশন বাতিল করুন।' : '✂️ Recommended: Audit 1-2 overlapping digital services this weekend.'
+          });
+        } else {
+          recommendations.push({
+            badge: 'badge-sub',
+            badgeText: currentLang === 'bn' ? 'পরিমিত সাবস্ক্রিপশন' : 'Lean Recurring Load',
+            headline: currentLang === 'bn' ? `পরিমিত সাবস্ক্রিপশন খরচ ($${totalMonthlySubscriptions.toFixed(2)}/মাস)` : `Balanced Subscription Overhead ($${totalMonthlySubscriptions.toFixed(2)}/mo)`,
+            body: currentLang === 'bn' ? `আপনার সক্রিয় সাবস্ক্রিপশন প্রতিশ্রুতি আয়ের একটি স্বাস্থ্যকর ${subRatio.toFixed(1)}% অংশ। সময়মতো পরিশোধ নিশ্চিত করতে ৭ দিনের সতর্কতা লক্ষ্য করুন।` : `Your active recurring commitments represent a healthy ${subRatio.toFixed(1)}% of total income. Monitor the upcoming 7-day billing alerts to ensure timely settlement without overdraft penalties.`,
+            actionCue: currentLang === 'bn' ? '🔔 চেক: ৭ দিনের অ্যালার্ট প্যানেল সময়মতো পেমেন্ট নিশ্চিত রাখে।' : '🔔 Check: 7-day alert flags keep payments synchronized.'
+          });
+        }
+      } else {
+        recommendations.push({
+          badge: 'badge-sub',
+          badgeText: currentLang === 'bn' ? 'বিল একত্রীকরণ' : 'Bill Consolidation',
+          headline: currentLang === 'bn' ? 'সাবস্ক্রিপশন যুক্ত করুন এবং অটো-ডেবিট ট্র্যাক করুন' : 'Track Subscriptions to Prevent Unnoticed Auto-Debits',
+          body: currentLang === 'bn' ? 'আপনার নিয়মিত বিল (নেটফ্লিক্স, ইন্টারনেট, ভাড়া) যোগ করে ৭ দিনের সতর্কতা সক্রিয় করুন।' : 'Add your recurring bills (Netflix, Internet, Rent, Spotify) to activate our 7-day proximity alert engine and view your normalized monthly burn.',
+          actionCue: currentLang === 'bn' ? '⚡ পদক্ষেপ: মডিউল ৩ ব্যবহার করে পুনরাবৃত্ত বিল যোগ করুন।' : '⚡ Action: Add a recurring bill using Module 3.'
+        });
+      }
+
+      container.innerHTML = recommendations.map((rec, idx) => `
+        <div class="ai-rec-card">
+          <div class="rec-tag-header">
+            <span class="rec-badge ${rec.badge}">${rec.badgeText}</span>
+            <span class="rec-number">${t('insightPrefix')} 0${idx + 1}</span>
+          </div>
+          <div class="rec-headline">${rec.headline}</div>
+          <div class="rec-body">${rec.body}</div>
+          <div class="rec-action-cue">${rec.actionCue}</div>
+        </div>
+      `).join('');
+
+      if (userClicked) {
+        showToast(currentLang === 'bn' ? 'AI আর্থিক বিশ্লেষণ হালনাগাদ করা হয়েছে!' : 'AI Financial Analysis refreshed with live ledger metrics!', 'success');
+      }
+    }
+
+    function askAiQuestion(prompt) {
+      const modal = document.getElementById('aiModal');
+      const title = document.getElementById('aiModalTitle');
+      const content = document.getElementById('aiModalContent');
+
+      title.textContent = `BudgetIQ: "${prompt}"`;
+      modal.classList.add('open');
+
+      let totalIncome = 0;
+      let totalExpenses = 0;
+      transactions.forEach(t => t.type === 'income' ? totalIncome += t.amount : totalExpenses += t.amount);
+      const net = totalIncome - totalExpenses;
+
+      let answer = '';
+      if (prompt.includes('$150')) {
+        if (net >= 300) {
+          answer = currentLang === 'bn' ? 
+            `<strong>সামর্থ্য যাচাই: অনুমোদিত।</strong><br><br>বর্তমান উদ্বৃত্ত <span class="mono-num" style="color: var(--color-success); font-weight: 700;">$${net.toFixed(2)}</span> থাকার কারণে $১৫০ খরচ করার পরেও আপনার কাছে <span class="mono-num">$${(net - 150).toFixed(2)}</span> তহবিল থাকবে। নিশ্চিন্তে এগিয়ে যেতে পারেন।` :
+            `<strong>Affordability Check: Approved.</strong><br><br>With a current surplus of <span class="mono-num" style="color: var(--color-success); font-weight: 700;">$${net.toFixed(2)}</span>, absorbing a $150 discretionary expense will leave you with a serene cushion of <span class="mono-num">$${(net - 150).toFixed(2)}</span>. Feel free to proceed without compromising your fixed obligations.`;
+        } else if (net >= 150) {
+          answer = currentLang === 'bn' ?
+            `<strong>সামর্থ্য যাচাই: সম্ভব তবে সতর্ক থাকা উচিত।</strong><br><br>আপনার উদ্বৃত্ত <span class="mono-num" style="color: var(--accent-lavender-dark); font-weight: 700;">$${net.toFixed(2)}</span>। $১৫০ ব্যয় করলে উদ্বৃত্ত কমে <span class="mono-num">$${(net - 150).toFixed(2)}</span> হবে। আগামী ৭ দিনের মধ্যে কোনো বিল থাকলে বেতন চক্র পর্যন্ত অপেক্ষা করার সুপারিশ রইলো।` :
+            `<strong>Affordability Check: Feasible but Tight.</strong><br><br>You have an available surplus of <span class="mono-num" style="color: var(--accent-lavender-dark); font-weight: 700;">$${net.toFixed(2)}</span>. Spending $150 will reduce your liquid buffer to <span class="mono-num">$${(net - 150).toFixed(2)}</span>. If you have upcoming bills due in the next 7 days, consider waiting until next pay cycle.`;
+        } else {
+          answer = currentLang === 'bn' ?
+            `<strong>সামর্থ্য যাচাই: অনুৎসাহিত।</strong><br><br>আপনার নেট ব্যালেন্স <span class="mono-num" style="color: var(--color-danger); font-weight: 700;">$${net.toFixed(2)}</span>। এখন $১৫০ খরচ করলে ঘাটতি তৈরি হতে পারে। জরুরি তহবিল রক্ষা করাই এখন অগ্রাধিকার।` :
+            `<strong>Affordability Check: Not Recommended.</strong><br><br>Your net balance is currently <span class="mono-num" style="color: var(--color-danger); font-weight: 700;">$${net.toFixed(2)}</span>. Spending $150 right now will create or expand a financial deficit. Focus on replenishing cash reserves first!`;
+        }
+      } else if (prompt.includes('trim subscriptions') || prompt.includes('সাবস্ক্রিপশন')) {
+        let subSum = subscriptions.reduce((acc, s) => acc + getNormalizedMonthlyCost(s.amount, s.frequency), 0);
+        answer = currentLang === 'bn' ?
+          `<strong>সাবস্ক্রিপশন যৌক্তিকরণ কাঠামো:</strong><br><br>আপনার বর্তমানে ${subscriptions.length}টি সক্রিয় বিল রয়েছে যার মোট মূল্য <span class="mono-num" style="color: var(--accent-lavender-dark); font-weight: 700;">$${subSum.toFixed(2)}/মাস</span>।<br><br>১. <em>১৪ দিনের নিয়ম:</em> গত দুই সপ্তাহে ব্যবহৃত না হওয়া সার্ভিস বাদ দিন।<br>২. <em>একত্রীকরণ:</em> একই ধরনের সার্ভিসের পুনরাবৃত্তি পরীক্ষা করুন।<br>৩. <em>বার্ষিক রূপান্তর:</em> প্রয়োজনীয় সার্ভিস বার্ষিক প্ল্যানে নিলে প্রায় ১৫-২০% সাশ্রয় হয়।` :
+          `<strong>Subscription Rationalization Framework:</strong><br><br>You currently have ${subscriptions.length} active recurring commitments totaling <span class="mono-num" style="color: var(--accent-lavender-dark); font-weight: 700;">$${subSum.toFixed(2)}/mo</span>.<br><br>1. <em>Audit Rule:</em> Identify any service unstreamed or unutilized in the past 14 days.<br>2. <em>Consolidation:</em> Check for overlapping categories.<br>3. <em>Annual Downgrades:</em> Switching monthly services you use permanently to yearly billing often yields 15-20% discounts.`;
+      } else if (prompt.includes('50/30/20') || prompt.includes('৫০/৩০/২০')) {
+        const needs = totalIncome * 0.50;
+        const wants = totalIncome * 0.30;
+        const savings = totalIncome * 0.20;
+        answer = currentLang === 'bn' ?
+          `<strong>৫০/৩০/২০ নিয়ম মূল্যায়ন:</strong><br><br>আপনার অর্জিত আয় <span class="mono-num" style="font-weight: 700;">$${totalIncome.toFixed(2)}</span>-এর ভিত্তিতে:<br>• <strong>প্রয়োজনীয় খরচ (সর্বোচ্চ ৫০%):</strong> ≤ $${needs.toFixed(2)} (বাড়ি ভাড়া, ইউটিলিটি, খাবার)<br>• <strong>শখ ও ইচ্ছা (সর্বোচ্চ ৩০%):</strong> ≤ $${wants.toFixed(2)} (বিনোদন, রেস্তোরাঁয় খাওয়া)<br>• <strong>সঞ্চয় ও ঋণ পরিশোধ (ন্যূনতম ২০%):</strong> ≥ $${savings.toFixed(2)}<br><br>বর্তমান সঞ্চয় হার <span class="mono-num" style="color: var(--accent-lavender-dark); font-weight: 700;">${totalIncome > 0 ? ((net / totalIncome) * 100).toFixed(1) : 0}%</span>।` :
+          `<strong>50/30/20 Benchmark Evaluation:</strong><br><br>Based on your logged income of <span class="mono-num" style="font-weight: 700;">$${totalIncome.toFixed(2)}</span>:<br>• <strong>Needs (50% max):</strong> Target ≤ $${needs.toFixed(2)} (Housing, Utilities, Groceries)<br>• <strong>Wants (30% max):</strong> Target ≤ $${wants.toFixed(2)} (Entertainment, Dining Out)<br>• <strong>Savings & Debt (20% min):</strong> Target ≥ $${savings.toFixed(2)}<br><br>Your current savings rate is <span class="mono-num" style="color: var(--accent-lavender-dark); font-weight: 700;">${totalIncome > 0 ? ((net / totalIncome) * 100).toFixed(1) : 0}%</span>. Adjusting your variable ledger entries will bring you in line with top wealth-building practices.`;
+      } else {
+        answer = currentLang === 'bn' ?
+          `<strong>ব্যয় বিশ্লেষণ ডায়াগনস্টিক:</strong><br><br>আপনার লেনদেনের বণ্টন বিশ্লেষণ করা হচ্ছে... 'ভিজ্যুয়াল অ্যানালিটিক্স' ট্যাবে গিয়ে আপনার সর্বোচ্চ ব্যয়ের অংশটি পরীক্ষা করুন। সাধারণত খাবার ও ছোট ছোট দৈনন্দিন কেনাকাটা মোট ব্যয়ের ৩৫% পর্যন্ত হতে পারে।` :
+          `<strong>Spending Leak Diagnostics:</strong><br><br>Analyzing your transaction distribution... Check the 'Visual Analytics' tab to inspect your highest category slice. Usually, Food & Groceries and small uncataloged daily payments represent up to 35% of stealth expenditure.`;
+      }
+
+      content.innerHTML = answer;
+    }
+
+    function closeAiModal() {
+      document.getElementById('aiModal').classList.remove('open');
+    }
+
+    /* ==========================================================================
+       8. VISUAL ANALYTICS (Chart.js Integration with Bilingual Labels)
+       ========================================================================== */
+    function renderCharts() {
+      if (typeof Chart === 'undefined') return;
+
+      const categoryCtx = document.getElementById('categoryChart');
+      const cashflowCtx = document.getElementById('cashflowChart');
+
+      if (!categoryCtx || !cashflowCtx) return;
+
+      const catTotals = {
+        'Food': 0,
+        'Rent': 0,
+        'Utilities': 0,
+        'Transport': 0,
+        'Entertainment': 0,
+        'Other': 0
+      };
+
+      let totalIncome = 0;
+      let totalExpenses = 0;
+
+      transactions.forEach(t => {
+        if (t.type === 'expense') {
+          totalExpenses += t.amount;
+          if (catTotals[t.category] !== undefined) {
+            catTotals[t.category] += t.amount;
+          } else {
+            catTotals['Other'] += t.amount;
+          }
+        } else {
+          totalIncome += t.amount;
+        }
+      });
+
+      const catKeys = Object.keys(catTotals);
+      const catLabels = catKeys.map(k => getLocalizedCategoryName(k));
+      const catData = Object.values(catTotals);
+      const catColors = ['#D4A373', '#9D8CD7', '#8CB9DE', '#D48B96', '#7FA988', '#B0A8A0'];
+
+      if (categoryChartInstance) {
+        categoryChartInstance.destroy();
+      }
+
+      categoryChartInstance = new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+          labels: catLabels,
+          datasets: [{
+            data: catData.every(v => v === 0) ? [1] : catData,
+            backgroundColor: catData.every(v => v === 0) ? ['#E8E1D3'] : catColors,
+            borderColor: '#FFFFFF',
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: '#5E544D',
+                font: { family: 'Plus Jakarta Sans', size: 11 },
+                padding: 12
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ` ${context.label}: $${context.raw.toFixed(2)}`;
+                }
+              }
+            }
+          },
+          cutout: '68%'
+        }
+      });
+
+      if (cashflowChartInstance) {
+        cashflowChartInstance.destroy();
+      }
+
+      let monthlySubCost = 0;
+      subscriptions.forEach(s => monthlySubCost += getNormalizedMonthlyCost(s.amount, s.frequency));
+
+      const cashflowLabels = [t('chartGrossInflows'), t('chartTotalOutflows'), t('chartProjectedRecurring')];
+
+      cashflowChartInstance = new Chart(cashflowCtx, {
+        type: 'bar',
+        data: {
+          labels: cashflowLabels,
+          datasets: [{
+            data: [totalIncome, totalExpenses, monthlySubCost],
+            backgroundColor: ['#7FA988', '#D48B96', '#9D8CD7'],
+            borderRadius: 18,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ` $${context.raw.toFixed(2)}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#5E544D', font: { family: 'Plus Jakarta Sans' } }
+            },
+            y: {
+              grid: { color: 'rgba(142, 124, 195, 0.12)' },
+              ticks: {
+                color: '#8E837A',
+                font: { family: 'JetBrains Mono' },
+                callback: function(value) { return '$' + value; }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    /* ==========================================================================
+       9. SAMPLE DATA SEEDERS (Instant Competition Showcase)
+       ========================================================================== */
+    function seedSampleLedgerData(showNotification = true) {
+      const today = new Date();
+      const formatOffsetDate = (daysAgo) => {
+        const d = new Date(today);
+        d.setDate(d.getDate() - daysAgo);
+        return d.toISOString().split('T')[0];
+      };
+
+      const sampleTx = [
+        { id: 'tx_s1', title: 'Tech Senior Salary & Bonus', amount: 5400.00, date: formatOffsetDate(2), category: 'Salary', type: 'income', createdAt: new Date().toISOString() },
+        { id: 'tx_s2', title: 'Luxury Minimalist Apartment Rent', amount: 1650.00, date: formatOffsetDate(5), category: 'Rent', type: 'expense', createdAt: new Date().toISOString() },
+        { id: 'tx_s3', title: 'Artisan Farmers Market & Groceries', amount: 242.50, date: formatOffsetDate(1), category: 'Food', type: 'expense', createdAt: new Date().toISOString() },
+        { id: 'tx_s4', title: 'Eco Power & Hydro Utilities', amount: 135.20, date: formatOffsetDate(6), category: 'Utilities', type: 'expense', createdAt: new Date().toISOString() },
+        { id: 'tx_s5', title: 'Clean Transit & Commute Pass', amount: 68.00, date: formatOffsetDate(3), category: 'Transport', type: 'expense', createdAt: new Date().toISOString() },
+        { id: 'tx_s6', title: 'Japanese Tea House & Dining', amount: 115.80, date: formatOffsetDate(4), category: 'Food', type: 'expense', createdAt: new Date().toISOString() },
+        { id: 'tx_s7', title: 'Ceramics Workshop & Exhibition', amount: 48.00, date: formatOffsetDate(7), category: 'Entertainment', type: 'expense', createdAt: new Date().toISOString() },
+        { id: 'tx_s8', title: 'Freelance Design Consulting', amount: 850.00, date: formatOffsetDate(8), category: 'Salary', type: 'income', createdAt: new Date().toISOString() }
+      ];
+
+      transactions = sampleTx;
+      saveUserData();
+      renderAll();
+      generateAiRecommendations(false);
+
+      if (showNotification) {
+        showToast(currentLang === 'bn' ? 'নমুনা আর্থিক লেজার সফলভাবে প্রস্তুত হয়েছে!' : 'Sample financial ledger populated successfully!', 'success');
+      }
+    }
+
+    function seedSampleSubscriptions(showNotification = true) {
+      const today = new Date();
+      const formatUpcomingDate = (daysAhead) => {
+        const d = new Date(today);
+        d.setDate(d.getDate() + daysAhead);
+        return d.toISOString().split('T')[0];
+      };
+
+      const sampleSubs = [
+        { id: 'sub_s1', name: 'Netflix 4K Ultra', amount: 22.99, frequency: 'monthly', nextDate: formatUpcomingDate(2), category: 'Entertainment', createdAt: new Date().toISOString() },
+        { id: 'sub_s2', name: 'Gigabit Fiber Internet', amount: 80.00, frequency: 'monthly', nextDate: formatUpcomingDate(5), category: 'Utilities', createdAt: new Date().toISOString() },
+        { id: 'sub_s3', name: 'Zen Yoga & Wellness Sanctuary', amount: 195.00, frequency: 'monthly', nextDate: formatUpcomingDate(12), category: 'Wellness', createdAt: new Date().toISOString() },
+        { id: 'sub_s4', name: 'Spotify Duo Premium', amount: 14.99, frequency: 'monthly', nextDate: formatUpcomingDate(18), category: 'Entertainment', createdAt: new Date().toISOString() },
+        { id: 'sub_s5', name: 'Cloud Vault & Design Library', amount: 120.00, frequency: 'yearly', nextDate: formatUpcomingDate(25), category: 'Software', createdAt: new Date().toISOString() }
+      ];
+
+      subscriptions = sampleSubs;
+      saveUserData();
+      renderAll();
+      generateAiRecommendations(false);
+
+      if (showNotification) {
+        showToast(currentLang === 'bn' ? 'নমুনা সাবস্ক্রিপশন সফলভাবে লোড হয়েছে!' : 'Sample recurring bills (Netflix, Internet, Yoga...) loaded!', 'success');
+      }
+    }
+
+    /* Export Ledger to CSV */
+    function exportLedgerCsv() {
+      if (transactions.length === 0) {
+        showToast(currentLang === 'bn' ? 'এক্সপোর্ট করার জন্য কোনো লেনদেন নেই।' : 'No ledger transactions to export.', 'info');
+        return;
+      }
+
+      let csv = 'ID,Date,Title,Category,Type,Amount\n';
+      transactions.forEach(t => {
+        csv += `"${t.id}","${t.date}","${t.title.replace(/"/g, '""')}","${t.category}","${t.type}",${t.amount.toFixed(2)}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `BudgetIQ_Ledger_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast(currentLang === 'bn' ? 'CSV ফাইল ডাউনলোড সম্পন্ন।' : 'Exported ledger CSV file.', 'success');
+    }
+
+    /* ==========================================================================
+       10. UI NAVIGATION, TABS & TOAST NOTIFICATION HELPERS
+       ========================================================================== */
+    function switchView(viewName) {
+      activeView = viewName;
+
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-view') === viewName) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      document.getElementById('viewDashboard').classList.remove('active');
+      document.getElementById('viewSubscriptions').classList.remove('active');
+      document.getElementById('viewAnalytics').classList.remove('active');
+
+      if (viewName === 'dashboard') {
+        document.getElementById('viewDashboard').classList.add('active');
+      } else if (viewName === 'subscriptions') {
+        document.getElementById('viewSubscriptions').classList.add('active');
+      } else if (viewName === 'analytics') {
+        document.getElementById('viewAnalytics').classList.add('active');
+        renderCharts();
+      }
+    }
+
+    function renderAll() {
+      calculateLedgerMetrics();
+      renderLedgerTable();
+      renderSubscriptions();
+      if (activeView === 'analytics') {
+        renderCharts();
+      }
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+
+      let iconSvg = '';
+      if (type === 'success') {
+        iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      } else if (type === 'error') {
+        iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-danger)" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+      } else {
+        iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-lavender)" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+      }
+
+      toast.innerHTML = `${iconSvg}<span>${escapeHtml(message)}</span>`;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 200ms ease';
+        setTimeout(() => toast.remove(), 220);
+      }, 3500);
+    }
+
+    function formatDisplayDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        const locale = currentLang === 'bn' ? 'bn-BD' : 'en-US';
+        return d.toLocaleDateString(locale, { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+      return dateStr;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    document.getElementById('aiModal').addEventListener('click', function(e) {
+      if (e.target === this) closeAiModal();
+    });
+
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeAiModal();
+    });
+
+    /* ==========================================================================
+       11. APPLICATION LIFECYCLE INITIALIZATION
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      setDateInputsDefault();
+      if (currentLang !== 'en') {
+        setLanguage(currentLang);
+      }
+      checkExistingSession();
+    });
+  </script>
+</body>
+</html>
